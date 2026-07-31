@@ -1,0 +1,9 @@
+# Video masters. `public/hero.mp4` and `public/hero-mobile.mp4` are the encoded
+# copies the site actually serves; these are the sources they were cut from, and
+# nothing imports them (see media-src/README.md for the ffmpeg recipes). Keeping
+# them out of the deployment upload saves ~9 MB per build.
+media-src/
+
+# Local tooling, never needed by the build.
+.claude/
+.impeccable/
