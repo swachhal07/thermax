@@ -1,0 +1,133 @@
+@import 'tailwindcss';
+
+/* Design tokens — Tailwind v4 reads these and generates utilities.
+   Change these values to rebrand the whole site. */
+@theme {
+  /* Thermax / MV Dugar red */
+  --color-brand-50: #fef2f3;
+  --color-brand-100: #fde3e5;
+  --color-brand-200: #fbccd0;
+  --color-brand-300: #f7a3aa;
+  --color-brand-400: #f16d78;
+  --color-brand-500: #e8404a;
+  --color-brand-600: #e30613;
+  --color-brand-700: #c00510;
+  --color-brand-800: #9e040d;
+  --color-brand-900: #7a030a;
+
+  --color-ink: #14171c;
+  --color-muted: #5b6478;
+
+  --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Instrument Serif', ui-serif, Georgia, serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+/* Certification marquee. The track holds two identical copies of the row, so
+   travelling exactly -50% lands copy two where copy one started and the loop is
+   seamless. Transform only — it stays on the compositor. */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* The journal's notes opening in place. Transform and opacity only — the row
+   below is moved by the panel entering the flow, which is layout the browser
+   does once, not a height the compositor has to interpolate every frame. */
+@keyframes note {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@theme {
+  /* Stays a CSS keyframe animation rather than moving to GSAP with the scroll
+     reveals: it runs forever at a constant rate, so there is nothing for a
+     timeline to coordinate and no reason to pay a tick for it. It is also the
+     content — a row of marks passing through the page — rather than an
+     entrance. Certifications.jsx pauses it when it's off screen. */
+  --animate-marquee: marquee 34s linear infinite;
+
+  /* Interface feedback on a state the visitor just caused, so it stays in CSS
+     with the hover and accordion transitions. Applied via `motion-safe:` at the
+     call site — Blog.jsx — so reduced motion gets the panel with no movement at
+     all rather than a shortened version of it. */
+  --animate-note: note 420ms cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+@layer components {
+  /* The entrance reveal used to live here as a CSS transition toggled by a
+     class. It is GSAP + ScrollTrigger now — see components/ui/Rise.jsx — so the
+     hidden state, the easing and the stagger delay are all set in JavaScript and
+     there is nothing left to declare. Deliberately no `.rise` rule remains: an
+     element that GSAP hasn't taken over must render visible, not hidden.
+
+     Hover, focus and accordion transitions stay in CSS across the site. Those
+     are interface feedback on a state the visitor just caused, they need to
+     interrupt and reverse cleanly, and CSS does that better than a tween. */
+
+  /* Fine grain over flat colour fields. Without it a full-bleed drench of a
+     single saturated red reads as an unpainted div rather than a surface. */
+  .field-grain {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 140px 140px;
+  }
+
+  /* The same grain at a fraction of the strength, for LIGHT fields — the grey
+     sheet the services grid sits on. Two things differ from `.field-grain`
+     beyond the opacity, and both are deliberate:
+
+     The opacity is baked into the SVG rather than applied as `opacity` on an
+     element. An overlay element spanning a whole section is a second
+     full-section paint for the compositor to blend on every scroll repaint;
+     baked in, the tile is rasterised once and the section keeps a single paint.
+
+     `numOctaves` drops to 2. At this strength the third octave is invisible
+     against the grey, and it's the most expensive one to generate. */
+  .sheet-grain {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    background-size: 140px 140px;
+  }
+}
+
+@layer base {
+  /* Smooth scrolling is deliberately NOT global.
+
+     As a property on <html> it applies to every programmatic scroll, including
+     the route-change jump to the top, and it runs an animation that GSAP's
+     ScrollTrigger then has to keep up with — every trigger on the page
+     recalculating through a scroll the visitor didn't ask for. It also has no
+     reduced-motion escape hatch when it's declared here.
+
+     Every place that actually wants an animated scroll asks for it at the call
+     site, where it can also check the motion preference first: the footer's
+     back-to-top button, and the hash-link handler in useScrollToTop. Nothing is
+     lost by removing it here.
+
+     Anchor targets keep their offset for the fixed header via `scroll-mt-*`. */
+  html {
+    scroll-behavior: auto;
+  }
+
+  body {
+    @apply bg-white text-ink font-sans antialiased;
+  }
+
+  h1,
+  h2 {
+    @apply font-display font-normal;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand-600;
+  }
+}
