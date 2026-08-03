@@ -1,28 +1,3 @@
-/**
- * The journal. Written as field notes rather than as marketing: each one answers
- * a question the technical desk gets asked on the phone, in the same plain voice
- * the FAQ uses.
- *
- * NOTE: every post here is DRAFT COPY written from the positioning already on
- * the site — local stock, specification support, people who come to site. None
- * of it has the client's sign-off, and three things in particular need checking
- * before this publishes: the dosage figures in the cold-weather note, the
- * chloride limit quoted in the resin note, and whether the business wants to
- * publish a stated shelf life at all. Replace with the client's own content, or
- * point `posts` at a CMS fetch and keep the shape.
- *
- * `line` keys to a slug in data/services.js, which is what the filter on the
- * index runs off. Keep them in sync — a post whose `line` matches nothing simply
- * never appears under a filter.
- *
- * `body` is deliberately short. These are abridged drafts standing in for real
- * articles, which is also why the index shows no reading time: a "6 min read"
- * label over three paragraphs is a small lie the page doesn't need to tell.
- *
- * Bylines are desks, not people. Inventing named authors for a real business
- * puts words in the mouths of staff who never wrote them — if the client wants
- * named bylines, they supply the names.
- */
 export const posts = [
   {
     slug: 'stock-in-kathmandu',

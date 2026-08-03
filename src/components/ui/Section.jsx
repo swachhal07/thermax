@@ -2,7 +2,6 @@ import Container from './Container'
 import Rise from './Rise'
 import { cn } from '@/lib/utils'
 
-/** Vertical rhythm wrapper with an optional eyebrow/title header. */
 export default function Section({ id, eyebrow, title, subtitle, className, children }) {
   return (
     <section id={id} className={cn('py-20 sm:py-28', className)}>
@@ -24,7 +23,6 @@ export default function Section({ id, eyebrow, title, subtitle, className, child
             </header>
           </Rise>
         )}
-        {/* Body trails the header slightly so the two read as one movement. */}
         <Rise delay={120} className={cn(title && 'mt-12')}>
           {children}
         </Rise>

@@ -14,10 +14,6 @@ const sizes = {
   lg: 'h-13 px-8 text-base',
 }
 
-/**
- * Renders a <Link> when `to` is passed, an <a> when `href` is passed,
- * otherwise a <button>.
- */
 export default function Button({
   to,
   href,

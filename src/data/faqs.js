@@ -1,16 +1,3 @@
-/**
- * The questions a site engineer or purchaser actually asks before ordering, in
- * the order they tend to ask them: what can I get, when, at what price basis,
- * will someone help me use it, and who am I buying from.
- *
- * Answers are written from the positioning already on the site — local stock,
- * specification support, people who come to site — so the section restates the
- * promise in the buyer's own words rather than adding a new one.
- *
- * NOTE: every number and commitment here needs the client's confirmation before
- * this goes live — lead times, delivery outside Kathmandu, sample policy,
- * minimum order. Don't publish a service promise the business can't keep.
- */
 export const faqs = [
   {
     id: 'stock',

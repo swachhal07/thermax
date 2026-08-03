@@ -6,8 +6,6 @@ import dugarLogo from '@/assets/dugar-logo.png'
 import thermaxLogo from '@/assets/thermax-logo.png'
 import thermaxLogoLight from '@/assets/thermax-logo-light.png'
 
-// Header runs full-bleed so the brand lockup hugs the left edge and the CTA
-// the right — it deliberately does NOT share the page's max-w container.
 const BAR = 'flex w-full px-5 sm:px-8 lg:px-16'
 
 function Chevron({ className }) {
@@ -29,12 +27,10 @@ function Chevron({ className }) {
   )
 }
 
-/** Desktop nav item — plain link, or a hover/focus dropdown when it has children. */
 function DesktopNavItem({ item, transparent }) {
   const [open, setOpen] = useState(false)
   const closeTimer = useRef(null)
 
-  // Small delay on close so the pointer can travel from trigger to panel.
   const show = () => {
     clearTimeout(closeTimer.current)
     setOpen(true)
@@ -110,7 +106,6 @@ export default function Header() {
   const [atTop, setAtTop] = useState(true)
   const { pathname } = useLocation()
 
-  // Close the mobile sheet whenever the route changes.
   useEffect(() => {
     setMenuOpen(false)
     setOpenGroup(null)
@@ -118,24 +113,6 @@ export default function Header() {
 
   const overlayRoute = OVERLAY_ROUTES.includes(pathname)
 
-  /**
-   * Once scrolled past the hero the bar always needs a solid backdrop.
-   *
-   * TWO GUARDS HERE, both for scroll cost rather than correctness:
-   *
-   * 1. The listener is only attached on OVERLAY ROUTES. `atTop` is read by
-   *    exactly one expression — `transparent`, below — and that expression is
-   *    already false on every other route, so on those pages this was a callback
-   *    running on every scroll event to compute a value nothing would read.
-   *    Re-attaching on route change re-reads the position immediately, so
-   *    arriving back on an overlay route is still correct.
-   *
-   * 2. The setter only fires when the boolean actually flips. React bails out of
-   *    re-rendering when given an identical value, but the update is still
-   *    scheduled and reconciled to find that out — and at ~100 scroll events a
-   *    second, during the one moment the page is also decoding video and running
-   *    reveal tweens, that is main-thread time spent to change nothing.
-   */
   useEffect(() => {
     if (!overlayRoute) return
 
@@ -148,11 +125,6 @@ export default function Header() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [overlayRoute])
 
-  /**
-   * Transparent only where something dark sits behind the bar: an overlay
-   * route, scrolled to the top, not hovered, and no mobile sheet open.
-   * Everywhere else it stays white so the links remain readable.
-   */
   const transparent = overlayRoute && atTop && !hovered && !menuOpen
 
   return (
@@ -165,7 +137,6 @@ export default function Header() {
       )}
     >
       <div className={cn(BAR, 'h-24 items-center justify-between gap-6')}>
-        {/* Dual brand lockup */}
         <Link to="/" className="flex shrink-0 items-center gap-4" aria-label={siteConfig.name}>
           <img src={dugarLogo} alt="MV Dugar Group" className="h-15 w-15 object-contain" />
           <span
@@ -175,7 +146,6 @@ export default function Header() {
               transparent ? 'bg-white/30' : 'bg-black/12',
             )}
           />
-          {/* Both marks stacked and crossfaded — swapping src would flash. */}
           <span className="relative block h-14 w-12 shrink-0">
             <img
               src={thermaxLogo}
@@ -197,7 +167,6 @@ export default function Header() {
           </span>
         </Link>
 
-        {/* Centered nav */}
         <nav className="hidden items-center gap-10 lg:flex">
           {navLinks.map((item) => (
             <DesktopNavItem key={item.label} item={item} transparent={transparent} />
@@ -239,7 +208,6 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile sheet */}
       {menuOpen && (
         <nav className="border-t border-black/8 bg-white lg:hidden">
           <div className={cn(BAR, 'flex-col py-3')}>

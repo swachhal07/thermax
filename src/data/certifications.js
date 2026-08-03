@@ -5,18 +5,6 @@ import responsibleCareLogo from '@/assets/certifications-img-5.webp'
 import halalLogo from '@/assets/1.png'
 import kosherLogo from '@/assets/3.png'
 
-/**
- * Certification marks supplied by the client, read off the artwork itself.
- *
- * `name` is not rendered — the mark carries its own wordmark — but it keeps the
- * list readable here and gives each entry a stable React key. `alt` is what a
- * screen reader gets, so it names the certification rather than describing the
- * graphic.
- *
- * Still worth confirming before launch: which of these belong to Thermax
- * Limited as manufacturer versus to MV Dugar as distributor, and that each is
- * currently valid.
- */
 export const certifications = [
   {
     name: 'ISO 9001',

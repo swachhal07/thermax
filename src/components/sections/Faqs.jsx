@@ -3,26 +3,6 @@ import { Link } from 'react-router-dom'
 import Rise from '@/components/ui/Rise'
 import { faqs } from '@/data/faqs'
 
-/**
- * Frequently asked questions.
- *
- * One panel open at a time. A stack of six answers all expanded is a wall of
- * body copy, and the value of the section is that a visitor can scan the six
- * questions in a couple of seconds and open only the one they came for.
- *
- * Each row is a plate in a tray, the same nested enclosure the how-we-work
- * steps use, so the two sections read as the same family of object. The tray
- * tints and the disc fills red when its panel is open, which means open state
- * is carried by the whole row rather than only by the icon.
- *
- * The panel animates on a 0fr → 1fr grid row, which is the only way to
- * transition to an automatic height without measuring anything in JavaScript;
- * it's the same mechanism the service plates use for their hover copy. Collapsed
- * panels are `inert`, so their text is out of the tab order and out of the
- * accessibility tree while still being there to animate.
- *
- * Last section on the home page, so it closes on the contact ask.
- */
 export default function Faqs() {
   const [openId, setOpenId] = useState(faqs[0].id)
 
@@ -30,8 +10,6 @@ export default function Faqs() {
     <section id="faqs" className="bg-white pb-24 pt-16 sm:pb-32 sm:pt-20">
       <div className="mx-auto w-full max-w-[84rem] px-5 sm:px-10">
         <Rise>
-          {/* Same lockup as the sections above: centred mark and kicker, the
-              heading at section rank with red on the closing phrase. */}
           <header className="mx-auto max-w-3xl text-center">
             <p className="mx-auto mb-6 flex w-fit items-center gap-3 font-mono text-[0.8125rem] uppercase tracking-[0.2em] text-ink">
               <span aria-hidden="true" className="flex shrink-0 flex-col gap-[2px]">
@@ -50,19 +28,13 @@ export default function Faqs() {
           </header>
         </Rise>
 
-        {/* Narrower than the grids above — a question and its answer are read as
-            a line of prose, and the full 84rem would run them too wide. */}
         <ul className="mx-auto mt-12 grid max-w-[54rem] list-none grid-cols-1 gap-3 p-0 sm:mt-16 sm:gap-4">
           {faqs.map((faq, i) => {
             const isOpen = openId === faq.id
 
             return (
-              /* Six rows at 60 ms apart — tight enough that the list reads as
-                 one movement rather than as six things arriving separately. */
               <Rise as="li" key={faq.id} delay={i * 60}>
                 <div>
-                  {/* Outer shell — deepens while its panel is open, so the row
-                      being read is the one carrying the most contrast. */}
                   <div
                     className={`group rounded-[1.75rem] p-1.5 ring-1 transition-[background-color,box-shadow] duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${
                       isOpen
@@ -70,8 +42,6 @@ export default function Faqs() {
                         : 'bg-ink/[0.04] ring-ink/[0.06] hover:bg-ink/[0.06] hover:ring-ink/10'
                     }`}
                   >
-                    {/* Inner core — concentric radius, highlight along the top
-                        edge, wide diffused shadow underneath. */}
                     <div className="rounded-[calc(1.75rem-0.375rem)] bg-white shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_1px_2px_rgba(20,23,28,0.04),0_18px_40px_-26px_rgba(20,23,28,0.26)]">
                       <h3>
                         <button
@@ -86,9 +56,6 @@ export default function Faqs() {
                             {faq.question}
                           </span>
 
-                          {/* Nested disc holding a plus that becomes a minus:
-                              the upright bar rotates a quarter turn onto the
-                              horizontal one rather than disappearing. */}
                           <span
                             aria-hidden="true"
                             className={`relative grid h-9 w-9 shrink-0 place-items-center rounded-full transition-[background-color,box-shadow] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${
@@ -121,9 +88,6 @@ export default function Faqs() {
                         }`}
                       >
                         <div className="overflow-hidden">
-                          {/* Hairline set in from both edges rather than run
-                              full width, so it reads as a rule under the
-                              question and not as a seam across the plate. */}
                           <div
                             className={`mx-6 border-t border-ink/[0.07] pb-6 pt-5 transition-opacity duration-500 sm:mx-8 sm:pb-7 ${
                               isOpen ? 'opacity-100' : 'opacity-0'
@@ -143,8 +107,6 @@ export default function Faqs() {
           })}
         </ul>
 
-        {/* Closing ask. The page used to end on a generic dark CTA panel; this
-            says the same thing in one line at the scale the section deserves. */}
         <Rise>
           <div className="mx-auto mt-12 flex max-w-[54rem] flex-col items-start gap-6 border-t border-ink/10 pt-8 sm:mt-14 sm:flex-row sm:items-center sm:justify-between">
             <p className="max-w-md text-base leading-relaxed text-muted text-pretty">

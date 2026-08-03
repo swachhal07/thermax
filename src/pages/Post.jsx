@@ -3,22 +3,6 @@ import Rise from '@/components/ui/Rise'
 import { COVERS, LINE_LABELS, codeFor, findPost, ordered, readTime } from '@/lib/journal'
 import { siteConfig } from '@/lib/siteConfig'
 
-/**
- * Post — ONE NOTE.
- *
- * The journal's index used to open its notes in place, because there was no
- * route to send them to. There is one now, so each note is a page: its own
- * address to send someone, its own back door to the index, and room for the body
- * to be set at a reading measure instead of squeezed into a card.
- *
- * Everything is measured to 68ch and set left rather than centred. Centred prose
- * makes every paragraph start at a different place, which is exactly the thing
- * that makes long text tiring to come back to after looking away.
- *
- * A bad slug is handled here rather than being allowed to fall through to the
- * 404: someone following a stale link to a note is in the journal and wants
- * another note, not the front page.
- */
 export default function Post() {
   const { slug } = useParams()
   const post = findPost(slug)
@@ -63,18 +47,10 @@ export default function Post() {
   }
 
   const cover = COVERS[post.slug]
-  /* The rail beside the measure. Four is what fits the reading height of a note
-     without the rail outrunning the body it sits next to. */
   const alsoFiled = ordered.filter((p) => p.slug !== post.slug).slice(0, 4)
 
   return (
     <>
-      {/* ── THE HEAD ────────────────────────────────────────────────────────
-          Back route first, then the mono ruled row the rest of the site opens
-          with, then the title. The way back is at the top because that is where
-          someone reaches for it — a "back to journal" link buried under 900 words
-          is a link for people who finished reading, not for people who opened the
-          wrong note. */}
       <section className="relative isolate overflow-hidden bg-white pb-14 pt-6 sm:pt-10">
         <div
           aria-hidden="true"
@@ -87,8 +63,6 @@ export default function Post() {
               to="/blog"
               className="group flex items-center gap-3 text-ink transition-colors duration-300 hover:text-brand-600"
             >
-              {/* Arrow rather than a bare rule: this row is the way out of the
-                  note, so it should read as a direction and not as decoration. */}
               <span
                 aria-hidden="true"
                 className="text-brand-600 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:-translate-x-[3px] motion-reduce:transition-none motion-reduce:group-hover:transform-none"
@@ -119,8 +93,6 @@ export default function Post() {
             </p>
           </Rise>
 
-          {/* Datasheet, as on every other page: the facts about the thing, ruled
-              rather than boxed. */}
           <Rise delay={120}>
             <dl className="mt-10 grid grid-cols-2 border-b border-t border-ink/15 sm:grid-cols-4">
               <div className="border-ink/15 py-5 sm:pr-8">
@@ -158,8 +130,6 @@ export default function Post() {
         </div>
       </section>
 
-      {/* ── THE NOTE ────────────────────────────────────────────────────────
-          Cover at the container width, then the body at a reading measure. */}
       <article className="bg-white pb-20 sm:pb-24">
         <div className="mx-auto w-full max-w-[84rem] px-5 sm:px-10">
           <Rise>
@@ -169,22 +139,12 @@ export default function Post() {
               height={900}
               decoding="async"
               alt={cover.alt}
-              /* Not lazy — it is the first thing under the title on this page,
-                 which makes it the one image here that should not wait. */
               className="h-64 w-full rounded-[1.5rem] bg-ink/5 object-cover sm:h-96 lg:h-[30rem]"
             />
           </Rise>
 
-          {/* Measure on the left, rail on the right. The body is set to 68ch
-              because that is what reads; on a wide screen that used to leave the
-              whole right half of the page empty, which reads as a mistake rather
-              than as air. The rail fills it with the only thing a reader at the
-              end of a note wants — the next note — and it is the same column the
-              eye already returns to, so it costs nothing to ignore. */}
           <div className="mt-14 lg:grid lg:grid-cols-[minmax(0,68ch)_minmax(0,1fr)] lg:items-start lg:gap-x-16 xl:gap-x-24">
             <Rise delay={100}>
-              {/* The measure. 68ch, and the first paragraph carries the lead-in
-                  size so the body starts with a step down rather than flat. */}
               <div className="max-w-[68ch]">
                 {post.body.map((para, i) => (
                   <p
@@ -199,8 +159,6 @@ export default function Post() {
                   </p>
                 ))}
 
-                {/* The one thing a note about specifying material should end with
-                    is the route to a person, not a share button. */}
                 <div className="mt-12 border-t border-ink/15 pt-8">
                   <p className="max-w-[52ch] text-[0.9375rem] leading-relaxed text-muted text-pretty">
                     Specifying against something on site and this doesn't quite
@@ -224,11 +182,6 @@ export default function Post() {
               </div>
             </Rise>
 
-            {/* ── THE RAIL ──────────────────────────────────────────────────
-                Sticky, ruled, no cards: the same mono label and hairline rules
-                the datasheet above uses, so it reads as the page's furniture and
-                not as a widget bolted to the side. Hidden below lg, where there
-                is no spare column and it would only push the body down. */}
             <aside
               aria-label="More from the journal"
               className="mt-16 hidden lg:sticky lg:top-28 lg:mt-0 lg:block"

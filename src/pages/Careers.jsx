@@ -3,7 +3,6 @@ import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import CTA from '@/components/sections/CTA'
 
-// Placeholder openings — replace with the client's real vacancies.
 const openings = [
   { id: 'sales-exec', title: 'Sales Executive', location: 'Kathmandu', type: 'Full-time' },
   { id: 'service-eng', title: 'Service Engineer', location: 'Pokhara', type: 'Full-time' },

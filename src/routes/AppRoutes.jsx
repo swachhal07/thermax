@@ -3,14 +3,6 @@ import { Routes, Route } from 'react-router-dom'
 import Layout from '@/components/layout/Layout'
 import Home from '@/pages/Home'
 
-/**
- * Home is imported directly — it's the landing route for almost every visitor,
- * and splitting it would only add a round trip before the hero can paint.
- *
- * Every other page is split out. They were riding in the initial bundle, so a
- * first-time visitor was downloading and parsing the contact form, the careers
- * page and the blog before seeing the hero. Add new pages the same way.
- */
 const About = lazy(() => import('@/pages/About'))
 const Services = lazy(() => import('@/pages/Services'))
 const Blog = lazy(() => import('@/pages/Blog'))
@@ -19,16 +11,10 @@ const Careers = lazy(() => import('@/pages/Careers'))
 const Contact = lazy(() => import('@/pages/Contact'))
 const NotFound = lazy(() => import('@/pages/NotFound'))
 
-/**
- * Holds the header's height so the footer doesn't jump up the viewport during
- * the chunk fetch. No spinner: on any usable connection these chunks arrive in
- * well under the time it takes a spinner to stop reading as a glitch.
- */
 function RouteFallback() {
   return <div className="min-h-[60vh]" />
 }
 
-/** Add new pages here — one <Route> per page. */
 export default function AppRoutes() {
   return (
     <Routes>
@@ -58,10 +44,6 @@ export default function AppRoutes() {
             </Suspense>
           }
         />
-        {/* One note per address. Separate from the index rather than nested with
-            an <Outlet>, because a note replaces the index rather than rendering
-            inside it. Post.jsx handles an unknown slug itself — someone on a
-            stale journal link wants another note, not the 404. */}
         <Route
           path="blog/:slug"
           element={
