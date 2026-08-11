@@ -4,7 +4,7 @@ import { gsap, prefersReducedMotion } from '@/lib/gsap'
 import { services } from '@/data/services'
 import { cn } from '@/lib/utils'
 import { siteConfig } from '@/lib/siteConfig'
-import platePeople from '@/assets/images/service-tunnels.webp'
+import platePeople from '@/assets/images/Kaligandaki_Hydro.jpg'
 
 const FACTS = [
   { term: 'Made by', value: 'Thermax' },
@@ -133,12 +133,12 @@ export default function AboutHero() {
               >
                 <img
                   src={platePeople}
-                  width={1600}
-                  height={944}
+                  width={2048}
+                  height={1536}
                   fetchPriority="high"
                   decoding="async"
-                  alt="A worker in a high-visibility vest on the walkway of a lit, concrete-lined rail tunnel"
-                  className="absolute inset-0 h-[112%] w-full object-cover object-[50%_45%]"
+                  alt="The Kali Gandaki hydropower dam in Nepal, its spillway gates holding back a turquoise reservoir in a steep river gorge"
+                  className="absolute inset-0 h-[112%] w-full object-cover object-[50%_50%]"
                 />
               </div>
               <div
@@ -147,7 +147,7 @@ export default function AboutHero() {
               />
               <figcaption className="absolute bottom-4 left-5 flex items-center gap-2.5 font-mono text-[0.625rem] tracking-[0.18em] text-white/85 uppercase">
                 <span aria-hidden="true" className="block h-[2px] w-3 bg-brand-500" />
-                Tunnel lining — completed bore
+                Kali Gandaki — hydropower dam
               </figcaption>
               <div
                 aria-hidden="true"
@@ -190,11 +190,11 @@ export default function AboutHero() {
                   <span className="font-mono text-[0.625rem] tracking-[0.2em] text-ink/45 uppercase">
                     {code}
                   </span>
-                  <span className="flex items-start justify-between gap-3 text-[0.9375rem] leading-snug font-semibold text-pretty text-ink transition-colors duration-300 group-hover/line:text-brand-600">
+                  <span className="flex items-center gap-2.5 text-[0.9375rem] leading-snug font-semibold text-pretty text-ink transition-colors duration-300 group-hover/line:text-brand-600">
                     {title}
                     <span
                       aria-hidden="true"
-                      className="mt-0.5 shrink-0 text-ink/30 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover/line:translate-x-1 group-hover/line:text-brand-600"
+                      className="shrink-0 leading-none text-ink/30 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover/line:translate-x-1 group-hover/line:text-brand-600"
                     >
                       →
                     </span>

@@ -17,7 +17,7 @@ const bySlug = Object.fromEntries(
 export default function Services() {
   return (
     <>
-      <section className="relative isolate overflow-hidden bg-white pb-16 pt-6 sm:pb-20 sm:pt-10">
+      <section className="relative isolate overflow-hidden bg-white pt-6 sm:pt-10">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 -z-10 [background-image:linear-gradient(to_right,rgba(20,23,28,0.055)_1px,transparent_1px),linear-gradient(to_bottom,rgba(20,23,28,0.055)_1px,transparent_1px)] [background-size:5.5rem_5.5rem] [mask-image:radial-gradient(110%_70%_at_50%_0%,black,transparent_75%)]"
@@ -52,6 +52,8 @@ export default function Services() {
               </p>
             </Rise>
           </div>
+
+          <div aria-hidden="true" className="mt-14 h-px w-full bg-ink/15 sm:mt-16" />
         </div>
       </section>
 
@@ -63,7 +65,7 @@ export default function Services() {
 
               return (
                 <Rise as="li" key={category.slug} delay={(i % 3) * 90}>
-                  <Link to="/contact" className="group block h-full">
+                  <Link to={`/services/${category.slug}`} className="group block h-full">
                     <div className="h-full rounded-[1.75rem] bg-ink/[0.04] p-1.5 ring-1 ring-ink/[0.06] transition-[background-color,box-shadow] duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:bg-ink/[0.07] group-hover:ring-ink/10 motion-reduce:transition-none">
                       <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(1.75rem-0.375rem)] bg-white shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_1px_2px_rgba(20,23,28,0.04),0_18px_40px_-24px_rgba(20,23,28,0.28)] transition-[transform,box-shadow] duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:-translate-y-[3px] group-hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_1px_2px_rgba(20,23,28,0.05),0_30px_60px_-26px_rgba(20,23,28,0.36)] motion-reduce:transition-none motion-reduce:group-hover:transform-none">
                         <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-ink">
@@ -106,7 +108,7 @@ export default function Services() {
                               className="block h-px w-6 shrink-0 origin-left bg-brand-600 transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-x-[1.5] motion-reduce:transition-none motion-reduce:group-hover:transform-none"
                             />
                             <span className="transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:transform-none">
-                              Enquire about this range
+                              See where it&rsquo;s used
                             </span>
                           </span>
                         </div>

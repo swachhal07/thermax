@@ -72,14 +72,21 @@ function FieldLabel({ htmlFor, children, optional }) {
   )
 }
 
+/* Ruled fields, not filled boxes. Six grey rectangles stacked in a white plate
+   is the heaviest thing on this page; a hairline the text sits on carries the
+   same affordance with none of the weight, and it is the language the rest of
+   the site already speaks. The focus line is drawn with a box-shadow rather
+   than a thicker border so nothing reflows when it lands. */
 const FIELD = [
-  'w-full rounded-xl bg-[#f4f4f6] px-4 py-3 text-[0.9375rem] text-ink',
-  'shadow-[inset_0_1px_2px_rgba(20,23,28,0.07)] ring-1 ring-ink/[0.08]',
-  'placeholder:text-ink/22 transition-[box-shadow,background-color] duration-300',
-  'outline-none focus:bg-white focus:ring-2 focus:ring-brand-600',
+  'w-full rounded-none border-0 border-b border-ink/[0.18] bg-transparent px-0 py-3.5',
+  'text-[1.0625rem] text-ink placeholder:text-ink/30',
+  'transition-[border-color,box-shadow] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]',
+  'hover:border-ink/35',
+  'outline-none focus:border-brand-600 focus:shadow-[0_1px_0_0_var(--color-brand-600)]',
+  'motion-reduce:transition-none',
 ].join(' ')
 
-const FIELD_ERROR = 'ring-2 ring-brand-600 bg-brand-50/60'
+const FIELD_ERROR = 'border-brand-600 shadow-[0_1px_0_0_var(--color-brand-600)]'
 
 function ErrorNote({ id, children }) {
   return (
@@ -238,7 +245,7 @@ export default function Contact() {
           <div className="grid grid-cols-1 gap-y-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:gap-x-14 lg:gap-y-0">
             <Rise>
               <div className="rounded-[2rem] bg-ink/[0.04] p-1.5 ring-1 ring-ink/[0.06]">
-                <div className="rounded-[calc(2rem-0.375rem)] bg-white p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_1px_2px_rgba(20,23,28,0.04),0_18px_40px_-24px_rgba(20,23,28,0.28)] sm:p-9">
+                <div className="rounded-[calc(2rem-0.375rem)] bg-white p-7 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_1px_2px_rgba(20,23,28,0.04),0_18px_40px_-24px_rgba(20,23,28,0.28)] sm:p-11">
                   {status === 'sent' ? (
                     <div className="py-6 sm:py-10">
                       <p className="flex items-center gap-3 font-mono text-[0.75rem] uppercase tracking-[0.22em] text-ink">
@@ -301,15 +308,19 @@ export default function Contact() {
                     </div>
                   ) : (
                     <form onSubmit={handleSubmit} noValidate>
-                      <p className="font-mono text-[0.75rem] uppercase tracking-[0.22em] text-muted">
+                      <p className="flex w-fit items-center gap-3 font-mono text-[0.75rem] uppercase tracking-[0.22em] text-ink">
+                        <span aria-hidden="true" className="flex shrink-0 flex-col gap-[2px]">
+                          <span className="block h-[2px] w-3 bg-brand-600" />
+                          <span className="block h-[2px] w-1.5 bg-brand-600/40" />
+                        </span>
                         Enquiry
                       </p>
-                      <h2 className="mt-4 max-w-[26ch] font-sans text-[1.75rem] font-bold leading-[1.1] tracking-[-0.02em] text-ink text-balance sm:text-[2rem]">
+                      <h2 className="mt-5 max-w-[24ch] font-sans text-[2rem] font-bold leading-[1.06] tracking-[-0.025em] text-ink text-balance sm:text-[2.5rem]">
                         Six lines and we can{' '}
                         <span className="text-brand-600">specify it.</span>
                       </h2>
 
-                      <fieldset className="mt-9 border-0 p-0">
+                      <fieldset className="mt-11 border-0 p-0">
                         <legend className="mb-4 flex items-baseline gap-2.5 font-mono text-[0.625rem] uppercase tracking-[0.22em] text-ink">
                           <span
                             aria-hidden="true"
@@ -332,10 +343,14 @@ export default function Contact() {
                               />
                               <span
                                 className={cn(
-                                  'flex items-center gap-2.5 rounded-full py-2.5 pl-3.5 pr-4 text-[0.875rem] font-medium ring-1 transition-[background-color,color,box-shadow] duration-300',
-                                  'bg-[#f4f4f6] text-ink/75 ring-ink/[0.08] hover:text-ink hover:ring-ink/20',
+                                  'flex items-center gap-2.5 rounded-full py-3 pl-4 pr-5 text-[0.875rem] font-medium ring-1',
+                                  'transition-[background-color,color,box-shadow,transform] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]',
+                                  'bg-[#f2f2f5] text-ink/75 ring-ink/[0.07] shadow-[inset_0_1px_2.5px_rgba(20,23,28,0.09),inset_0_-1px_0_rgba(255,255,255,0.7)]',
+                                  'hover:bg-[#eeeef2] hover:text-ink hover:ring-ink/[0.14]',
                                   'peer-checked:bg-ink peer-checked:text-white peer-checked:ring-ink',
+                                  'peer-checked:shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_10px_22px_-14px_rgba(20,23,28,0.7)]',
                                   'peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-600',
+                                  'active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:transform-none',
                                 )}
                               >
                                 <span
@@ -354,7 +369,7 @@ export default function Contact() {
                         </div>
                       </fieldset>
 
-                      <div className="mt-8 grid gap-5 sm:grid-cols-2">
+                      <div className="mt-11 grid gap-8 sm:grid-cols-2 sm:gap-x-10">
                         <div>
                           <FieldLabel htmlFor="name">Name</FieldLabel>
                           <input
@@ -367,7 +382,7 @@ export default function Contact() {
                             placeholder="Who we're replying to"
                             aria-invalid={Boolean(errors.name)}
                             aria-describedby={errors.name ? 'name-error' : undefined}
-                            className={cn('mt-3', FIELD, errors.name && FIELD_ERROR)}
+                            className={cn('mt-1', FIELD, errors.name && FIELD_ERROR)}
                           />
                           {errors.name && <ErrorNote id="name-error">{errors.name}</ErrorNote>}
                         </div>
@@ -383,7 +398,7 @@ export default function Contact() {
                             onChange={set('company')}
                             autoComplete="organization"
                             placeholder="Contractor, plant, or project"
-                            className={cn('mt-3', FIELD)}
+                            className={cn('mt-1', FIELD)}
                           />
                         </div>
 
@@ -401,7 +416,7 @@ export default function Contact() {
                             placeholder="name@company.com"
                             aria-invalid={Boolean(errors.email)}
                             aria-describedby={errors.email ? 'email-error' : undefined}
-                            className={cn('mt-3', FIELD, errors.email && FIELD_ERROR)}
+                            className={cn('mt-1', FIELD, errors.email && FIELD_ERROR)}
                           />
                           {errors.email && <ErrorNote id="email-error">{errors.email}</ErrorNote>}
                         </div>
@@ -419,17 +434,17 @@ export default function Contact() {
                             onChange={set('phone')}
                             autoComplete="tel"
                             placeholder="Faster than email, both ways"
-                            className={cn('mt-3', FIELD)}
+                            className={cn('mt-1', FIELD)}
                           />
                         </div>
                       </div>
 
-                      <div className="mt-6">
+                      <div className="mt-9">
                         <FieldLabel htmlFor="message">What the job needs</FieldLabel>
                         <textarea
                           id="message"
                           name="message"
-                          rows={6}
+                          rows={5}
                           ref={(el) => (fields.current.message = el)}
                           value={form.message}
                           onChange={set('message')}
@@ -440,7 +455,7 @@ export default function Contact() {
                             errors.message && 'message-error',
                           )}
                           className={cn(
-                            'mt-3 resize-y leading-relaxed',
+                            'mt-1 resize-y leading-relaxed',
                             FIELD,
                             errors.message && FIELD_ERROR,
                           )}
@@ -457,7 +472,7 @@ export default function Contact() {
                         </p>
                       </div>
 
-                      <div className="mt-9 flex flex-col gap-5 border-t border-ink/10 pt-7 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="mt-11 flex flex-col gap-5 border-t border-ink/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
                         <button
                           type="submit"
                           disabled={sending}

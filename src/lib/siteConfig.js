@@ -2,7 +2,7 @@ export const siteConfig = {
   name: 'Thermax',
   tagline: 'Engineering comfort, sustainably.',
   heroBadge: 'Part of the MV Dugar Group',
-  heroHeadline: 'Engineered for what you build',
+  heroHeadline: 'Chemistry that holds it together',
   heroSubheadline:
     'Construction and industrial chemicals supplied, specified, and supported across Nepal.',
   description:
@@ -25,7 +25,7 @@ export const OVERLAY_ROUTES = ['/']
 
 export const navLinks = [
   { label: 'Home', to: '/' },
-  { label: 'Services', to: '/services' },
+  { label: 'Applications', to: '/services' },
   { label: 'About', to: '/about' },
   { label: 'Blog', to: '/blog' },
 ]

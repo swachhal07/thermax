@@ -3,7 +3,7 @@ import Rise from '@/components/ui/Rise'
 import Counter from '@/components/ui/Counter'
 import { services } from '@/data/services'
 import { cn } from '@/lib/utils'
-import crewPlate from '@/assets/images/service-bridges.webp'
+import crewPlate from '@/assets/images/images.jpg'
 import labPlate from '@/assets/about-plate-lab.webp'
 
 function Kicker({ className, children }) {
@@ -23,22 +23,27 @@ function Kicker({ className, children }) {
   )
 }
 
-const CHAIN = [
-  {
-    id: 'formulated',
-    term: 'Formulated',
-    body: 'Thermax has spent decades making chemistry for industry — resins, treatment chemicals, oil field and construction lines, produced under audited management systems and sold into plants worldwide.',
-  },
-  {
-    id: 'held',
-    term: 'Held',
-    body: 'Through the MV Dugar Group the catalogue is stocked in Kathmandu rather than ordered in against each job. A product that has to be imported after the specification is agreed is a product that arrives after the pour.',
-  },
-  {
-    id: 'supported',
-    term: 'Supported',
-    body: 'The same desk that quotes the product specifies it, and goes to site when the substrate turns out not to match the drawing. Nothing is handed to a call centre once the invoice is out.',
-  },
+const STORY_INTRO = [
+  'Chandanbala International is the authorised distributor of Thermax Construction Chemicals in Nepal, and a company of the MV Dugar Group.',
+  'The range goes out to residential, commercial, industrial and infrastructure work across the country — held in Kathmandu rather than ordered in against each job. Nine lines cover it:',
+]
+
+const STORY_PORTFOLIO = [
+  'Waterproofing systems',
+  'Concrete admixtures',
+  'Repair mortars',
+  'Protective coatings',
+  'Grouts',
+  'Industrial flooring systems',
+  'Sealants',
+  'Bonding agents',
+  'Specialized construction chemical solutions',
+]
+
+const STORY_BODY = [
+  'We also take on the work itself. Structural repair, concrete rehabilitation, waterproofing, protective coatings and specialised repair jobs are carried out by our own technical team. The people who specified the product are the people who apply it, and who answer for how the structure performs afterwards.',
+  'Behind the range sits Thermax: one of India’s leading manufacturers of construction chemicals, producing across multiple plants and backed by a group turning over more than INR 10,000 crore a year. That is the manufacturing depth and the technical support standing behind every drum that leaves the warehouse.',
+  'What we commit to is narrow enough to hold us to. The right product for the substrate, dosage worked out against the conditions on the day, and someone who picks up the phone when site turns up something the drawing did not show.',
 ]
 
 const CHECKS = [
@@ -81,7 +86,7 @@ export default function About() {
         id="story"
         className="scroll-mt-32 overflow-clip bg-[#f4f4f6] pt-12 pb-20 sm:pt-16 sm:pb-28"
       >
-        <div className="mx-auto w-full max-w-[84rem] px-5 sm:px-10">
+        <div className="mx-auto w-full max-w-[84rem] px-5 sm:px-10 xl:max-w-[92rem]">
           <Rise>
             <header className="mx-auto max-w-3xl text-center">
               <Kicker className="mx-auto">Our story</Kicker>
@@ -91,47 +96,63 @@ export default function About() {
             </header>
           </Rise>
 
-          <div className="mt-14 grid gap-y-10 lg:grid-cols-12 lg:gap-x-16">
-            <Rise className="lg:col-span-7">
-              <ol className="grid list-none grid-cols-1 gap-0 border-t border-ink/15 p-0">
-                {CHAIN.map((link, i) => (
-                  <li
-                    key={link.id}
-                    className="grid grid-cols-[2.75rem_minmax(0,1fr)] gap-x-5 border-b border-ink/15 py-8 sm:grid-cols-[4rem_minmax(0,1fr)] sm:gap-x-8"
+          <div className="mt-14 grid gap-y-10 lg:grid-cols-12 lg:gap-x-6">
+            <Rise className="lg:col-span-6">
+              <div className="border-t border-ink/15 pt-8">
+                {STORY_INTRO.map((paragraph, i) => (
+                  <p
+                    key={paragraph.slice(0, 32)}
+                    className={cn(
+                      'max-w-[62ch] text-justify text-[1.0625rem] leading-relaxed text-ink/75 sm:text-[1.125rem]',
+                      i === 0 ? 'text-ink' : 'mt-5',
+                    )}
                   >
-                    <span
-                      aria-hidden="true"
-                      className="font-mono text-[1.75rem] leading-none tabular-nums text-ink/20 sm:text-[2.5rem]"
-                    >
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <div className="min-w-0">
-                      <h3 className="text-lg font-semibold tracking-[-0.01em] text-ink sm:text-xl">
-                        {link.term}
-                      </h3>
-                      <p className="mt-3 max-w-[56ch] text-base leading-relaxed text-pretty text-ink/75">
-                        {link.body}
-                      </p>
-                    </div>
-                  </li>
+                    {paragraph}
+                  </p>
                 ))}
-              </ol>
+
+                <ul className="mt-7 grid list-none grid-cols-1 gap-x-8 gap-y-3 p-0 sm:grid-cols-2">
+                  {STORY_PORTFOLIO.map((item) => (
+                    <li
+                      key={item}
+                      className="flex items-start gap-3.5 text-[1.0625rem] leading-relaxed text-ink/80 sm:text-[1.125rem] sm:last:col-span-2"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="mt-[0.755em] block h-[2px] w-3.5 shrink-0 bg-brand-600"
+                      />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div aria-hidden="true" className="mt-9 h-px w-full bg-ink/12" />
+
+                {STORY_BODY.map((paragraph) => (
+                  <p
+                    key={paragraph.slice(0, 32)}
+                    className="mt-6 max-w-[62ch] text-justify text-[1.0625rem] leading-relaxed text-ink/75 sm:text-[1.125rem]"
+                  >
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
             </Rise>
 
             <Rise
               from="right"
               delay={140}
-              className="lg:col-span-5 lg:col-start-8 lg:h-full lg:-mr-10 xl:-mr-16"
+              className="lg:col-span-6 lg:col-start-7 lg:h-full lg:pl-6"
             >
               <figure className="relative h-80 overflow-hidden bg-ink/5 shadow-[0_40px_80px_-52px_rgba(20,23,28,0.55)] sm:h-[28rem] lg:h-full">
                 <img
                   src={crewPlate}
                   width={1600}
-                  height={1066}
+                  height={944}
                   loading="lazy"
                   decoding="async"
-                  alt="A cable-stayed bridge under construction, two deck sections reaching towards each other"
-                  className="absolute inset-0 h-full w-full object-cover object-[42%_55%]"
+                  alt="A tunnel portal cut into a shotcrete-faced rock face, with a crew standing in the bore mouth"
+                  className="absolute inset-0 h-full w-full object-cover object-[50%_45%]"
                 />
                 <div
                   aria-hidden="true"
@@ -139,7 +160,7 @@ export default function About() {
                 />
                 <figcaption className="absolute bottom-4 left-5 flex items-center gap-2.5 font-mono text-[0.625rem] tracking-[0.18em] text-white/85 uppercase">
                   <span aria-hidden="true" className="block h-[2px] w-3 bg-brand-500" />
-                  Bridge deck — under construction
+                  Tunnel portal — excavation face
                 </figcaption>
                 <div
                   aria-hidden="true"

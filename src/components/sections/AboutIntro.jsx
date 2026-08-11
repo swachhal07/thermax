@@ -107,8 +107,8 @@ export default function AboutIntro() {
           <Rise className="lg:col-span-6">
             <div>
               <h2 className="max-w-[19ch] font-sans text-[2.75rem] leading-[0.98] font-bold tracking-[-0.03em] text-balance text-ink sm:text-6xl lg:text-[4rem]">
-                Chemistry that holds Nepal{' '}
-                <span className="text-brand-600">together.</span>
+                Specified, supplied,{' '}
+                <span className="text-brand-600">applied.</span>
               </h2>
             </div>
 

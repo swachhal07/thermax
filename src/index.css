@@ -40,10 +40,32 @@
   }
 }
 
+@keyframes drift {
+  from {
+    transform: scale(1.13);
+  }
+  to {
+    transform: scale(1.04);
+  }
+}
+
+@keyframes rail {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
 @theme {
   --animate-marquee: marquee 34s linear infinite;
 
   --animate-note: note 420ms cubic-bezier(0.32, 0.72, 0, 1) both;
+
+  --animate-drift: drift 9s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+
+  --animate-rail: rail var(--rail, 6500ms) linear both;
 }
 
 @layer components {
