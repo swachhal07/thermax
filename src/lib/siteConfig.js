@@ -25,8 +25,8 @@ export const OVERLAY_ROUTES = ['/']
 
 export const navLinks = [
   { label: 'Home', to: '/' },
-  { label: 'Applications', to: '/services' },
   { label: 'About', to: '/about' },
+  { label: 'Applications', to: '/services' },
   { label: 'Blog', to: '/blog' },
 ]
 
