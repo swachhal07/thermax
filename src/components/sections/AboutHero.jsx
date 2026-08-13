@@ -80,20 +80,24 @@ export default function AboutHero() {
           <div className="lg:col-span-6">
             <h1
               data-about-hero="headline"
-              className="font-sans text-[2.75rem] leading-[0.98] font-extrabold tracking-[-0.025em] text-balance text-ink sm:text-6xl lg:text-[4.25rem]"
+              className="font-sans text-[clamp(2.25rem,4.4vw,4rem)] leading-[0.98] font-extrabold tracking-[-0.03em] text-ink"
             >
-              Made for industry.
-              <br className="hidden sm:block" />{' '}
-              <span className="text-brand-600">Held in Kathmandu.</span>
+              <span className="block">Made for industry.</span>
+              <span className="block text-brand-600">Held in Nepal.</span>
             </h1>
 
             <p
               data-about-hero="sub"
               className="mt-7 max-w-[52ch] text-base leading-relaxed text-pretty text-ink/75 sm:text-lg"
             >
-              Thermax makes chemistry for industry. The MV Dugar Group holds it
-              here, quotes it, specifies it against your mix, and goes to site
-              when the substrate turns out not to match the drawing.
+              Thermax has spent decades formulating construction chemistry for
+              industry — admixtures, waterproofing, grouts and anchors, repair
+              systems, protective coatings, surface treatment. One of India’s
+              leading manufacturers in the field, producing across multiple
+              plants, with a technical data sheet and batch documentation behind
+              every drum. That is the chemistry held here in Kathmandu, quoted
+              and specified against your mix, and taken to site when the
+              substrate turns out not to match the drawing.
             </p>
 
             <dl data-about-hero="facts" className="mt-10 flex flex-wrap items-center">
@@ -141,14 +145,6 @@ export default function AboutHero() {
                   className="absolute inset-0 h-[112%] w-full object-cover object-[50%_50%]"
                 />
               </div>
-              <div
-                aria-hidden="true"
-                className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-ink/70 to-transparent"
-              />
-              <figcaption className="absolute bottom-4 left-5 flex items-center gap-2.5 font-mono text-[0.625rem] tracking-[0.18em] text-white/85 uppercase">
-                <span aria-hidden="true" className="block h-[2px] w-3 bg-brand-500" />
-                Kali Gandaki — hydropower dam
-              </figcaption>
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 ring-1 ring-ink/10 ring-inset"

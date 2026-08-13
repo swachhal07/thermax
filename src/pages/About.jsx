@@ -1,7 +1,5 @@
 import AboutHero from '@/components/sections/AboutHero'
 import Rise from '@/components/ui/Rise'
-import Counter from '@/components/ui/Counter'
-import { services } from '@/data/services'
 import { cn } from '@/lib/utils'
 import crewPlate from '@/assets/images/images.jpg'
 import labPlate from '@/assets/about-plate-lab.webp'
@@ -24,24 +22,12 @@ function Kicker({ className, children }) {
 }
 
 const STORY_INTRO = [
-  'Chandanbala International is the authorised distributor of Thermax Construction Chemicals in Nepal, and a company of the MV Dugar Group.',
-  'The range goes out to residential, commercial, industrial and infrastructure work across the country — held in Kathmandu rather than ordered in against each job. Nine lines cover it:',
-]
-
-const STORY_PORTFOLIO = [
-  'Waterproofing systems',
-  'Concrete admixtures',
-  'Repair mortars',
-  'Protective coatings',
-  'Grouts',
-  'Industrial flooring systems',
-  'Sealants',
-  'Bonding agents',
-  'Specialized construction chemical solutions',
+  'Chandanbala International is the authorised distributor of Thermax Construction Chemicals in Nepal. We hold the range in Kathmandu, quote it, and specify it against the mix and the substrate in front of us — for residential, commercial, industrial and infrastructure work across the country.',
+  'We also take on the work itself. Structural repair, concrete rehabilitation, waterproofing, protective coatings and specialised repair jobs are carried out by our own technical team. The people who specified the product are the people who apply it, and who answer for how the structure performs afterwards.',
 ]
 
 const STORY_BODY = [
-  'We also take on the work itself. Structural repair, concrete rehabilitation, waterproofing, protective coatings and specialised repair jobs are carried out by our own technical team. The people who specified the product are the people who apply it, and who answer for how the structure performs afterwards.',
+  'That is a distribution business and an applicator under one roof, which is only workable with stock and a warehouse behind it. Chandanbala International is a company of the MV Dugar Group, a Nepali business house headquartered in Kathmandu — the reason the range sits here on the shelf rather than being ordered in against each job.',
   'Behind the range sits Thermax: one of India’s leading manufacturers of construction chemicals, producing across multiple plants and backed by a group turning over more than INR 10,000 crore a year. That is the manufacturing depth and the technical support standing behind every drum that leaves the warehouse.',
   'What we commit to is narrow enough to hold us to. The right product for the substrate, dosage worked out against the conditions on the day, and someone who picks up the phone when site turns up something the drawing did not show.',
 ]
@@ -64,18 +50,6 @@ const CHECKS = [
     body: 'Batch records sit with the stock in Kathmandu, so a drum standing on site can be tied back to the batch that was tested.',
   },
 ]
-
-const NEPAL_SINCE = 1998
-const yearsInNepal = new Date().getFullYear() - NEPAL_SINCE
-
-const STATS = [
-  { term: 'Projects completed', value: 247 },
-  { term: 'Years in Nepal', value: yearsInNepal },
-  { term: 'Districts reached', value: 38 },
-  { term: 'Sectors supplied', value: services.length },
-]
-
-const SHOWN_STATS = STATS.filter((stat) => Number.isFinite(stat.value))
 
 export default function About() {
   return (
@@ -110,21 +84,6 @@ export default function About() {
                     {paragraph}
                   </p>
                 ))}
-
-                <ul className="mt-7 grid list-none grid-cols-1 gap-x-8 gap-y-3 p-0 sm:grid-cols-2">
-                  {STORY_PORTFOLIO.map((item) => (
-                    <li
-                      key={item}
-                      className="flex items-start gap-3.5 text-[1.0625rem] leading-relaxed text-ink/80 sm:text-[1.125rem] sm:last:col-span-2"
-                    >
-                      <span
-                        aria-hidden="true"
-                        className="mt-[0.755em] block h-[2px] w-3.5 shrink-0 bg-brand-600"
-                      />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
 
                 <div aria-hidden="true" className="mt-9 h-px w-full bg-ink/12" />
 
@@ -230,47 +189,6 @@ export default function About() {
               </dl>
             </Rise>
           </div>
-        </div>
-      </section>
-
-      <section
-        id="figures"
-        className="scroll-mt-32 border-t border-ink/10 bg-white pt-12 pb-20 sm:pt-16 sm:pb-28"
-      >
-        <div className="mx-auto w-full max-w-[84rem] px-5 sm:px-10">
-          <Rise>
-            <header className="mx-auto max-w-3xl text-center">
-              <Kicker className="mx-auto">By the numbers</Kicker>
-              <h2 className="font-sans text-[2.5rem] leading-[1.04] font-bold tracking-[-0.02em] text-balance text-ink sm:text-5xl lg:text-[3.25rem]">
-                Long enough to have <span className="text-brand-600">a record</span>
-              </h2>
-            </header>
-          </Rise>
-
-          <Rise delay={120}>
-            <ul
-              className={cn(
-                'mt-12 grid list-none grid-cols-2 gap-x-6 gap-y-12 p-0 sm:gap-x-10',
-                SHOWN_STATS.length > 2 && 'lg:grid-cols-4',
-              )}
-            >
-              {SHOWN_STATS.map(({ term, value, from, group }) => (
-                <li key={term} className="border-t border-ink/15 pt-6 text-center">
-
-                  <Counter
-                    value={value}
-                    from={from}
-                    group={group}
-                    className="bg-clip-text font-mono text-[2.75rem] leading-none tracking-[-0.02em] text-transparent [-webkit-background-clip:text] [background-image:linear-gradient(135deg,var(--color-brand-800)_0%,var(--color-brand-700)_38%,var(--color-brand-600)_68%,var(--color-brand-500)_88%,var(--color-brand-400)_100%)] sm:text-[3.5rem]"
-                  />
-
-                  <p className="mt-5 text-[1.0625rem] leading-snug font-semibold text-pretty text-ink">
-                    {term}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          </Rise>
         </div>
       </section>
 

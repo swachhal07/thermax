@@ -1,7 +1,7 @@
 import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import ArrowButton from '@/components/ui/ArrowButton'
 import Rise from '@/components/ui/Rise'
-import { categoryBySlug } from '@/data/categories'
+import { categories, categoryBySlug } from '@/data/categories'
 import { services } from '@/data/services'
 
 const PRODUCT_PHOTOS = import.meta.glob('../assets/images/product-*.{jpg,jpeg,png,webp}', {
@@ -40,13 +40,19 @@ export default function Application() {
   if (!category) return <Navigate to="/services" replace />
 
   const photo = productPhoto[category.slug] ?? null
+  const rangeIndex = categories.findIndex((c) => c.slug === category.slug) + 1
   const uses = (category.uses ?? [])
     .map((use) => ({ ...use, sector: sectorBySlug[use.sector] }))
     .filter((use) => use.sector)
 
   return (
     <>
-      <section className="relative isolate overflow-hidden bg-white pt-6 sm:pt-10">
+      <section className="relative isolate overflow-clip bg-white pt-6 sm:pt-10">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 -z-10 [background-image:linear-gradient(to_right,rgba(20,23,28,0.055)_1px,transparent_1px),linear-gradient(to_bottom,rgba(20,23,28,0.055)_1px,transparent_1px)] [background-size:5.5rem_5.5rem] [mask-image:radial-gradient(110%_70%_at_50%_0%,black,transparent_75%)]"
+        />
+
         <div className="mx-auto w-full max-w-[84rem] px-5 sm:px-10">
           <Rise className="flex flex-wrap items-center gap-x-6 gap-y-4">
             <button
@@ -84,34 +90,55 @@ export default function Application() {
             </nav>
           </Rise>
 
-          <div className="mt-10 grid items-end gap-y-10 lg:grid-cols-12 lg:gap-x-12">
-            <Rise className="lg:col-span-7">
-              <h1 className="max-w-[16ch] font-sans text-[2.5rem] font-extrabold leading-[0.96] tracking-[-0.03em] text-ink text-balance sm:text-[3.25rem] lg:text-[4rem]">
+          <div aria-hidden="true" className="mt-8 h-px bg-ink/15 lg:-mr-10 xl:-mr-20" />
+
+          <div className="grid gap-y-10 lg:grid-cols-12 lg:gap-x-14">
+            <Rise className="lg:col-span-6 lg:pb-20">
+              <p className="flex items-baseline gap-3 pt-6 font-mono text-[0.6875rem] uppercase tracking-[0.22em] tabular-nums text-muted">
+                <span className="text-brand-600">{String(rangeIndex).padStart(2, '0')}</span>
+                <span aria-hidden="true" className="text-ink/25">
+                  /
+                </span>
+                <span>{String(categories.length).padStart(2, '0')} ranges held</span>
+              </p>
+
+              <h1 className="mt-8 font-sans text-[clamp(2.5rem,5.4vw,4.25rem)] font-extrabold leading-[0.94] tracking-[-0.035em] text-ink">
                 {category.name}
+                <span className="text-brand-600">.</span>
               </h1>
 
-              <p className="mt-6 max-w-[52ch] text-[1.0625rem] leading-relaxed text-muted text-pretty">
+              <p className="mt-8 max-w-[46ch] border-l border-ink/12 pl-6 text-[1.0625rem] leading-relaxed text-ink/70 text-pretty sm:text-[1.125rem]">
                 {category.body}
               </p>
             </Rise>
 
-            <Rise delay={140} className="lg:col-span-5">
-              <div className="rounded-[1.75rem] bg-ink/[0.04] p-1.5 ring-1 ring-ink/[0.06]">
-                <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[calc(1.75rem-0.375rem)] bg-ink">
-                  {photo && (
-                    <img
-                      src={photo}
-                      alt={category.imageAlt}
-                      decoding="async"
-                      className="absolute inset-0 h-full w-full object-cover"
-                    />
-                  )}
-                </div>
-              </div>
+            <Rise
+              from="right"
+              delay={140}
+              className="lg:col-span-6 lg:-mr-10 lg:h-full lg:pt-6 xl:-mr-20"
+            >
+              <figure className="relative h-72 overflow-hidden bg-ink/5 shadow-[0_40px_80px_-52px_rgba(20,23,28,0.55)] sm:h-[24rem] lg:h-full">
+                {photo && (
+                  <img
+                    src={photo}
+                    alt={category.imageAlt}
+                    decoding="async"
+                    fetchPriority="high"
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                )}
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 ring-1 ring-ink/10 ring-inset"
+                />
+              </figure>
             </Rise>
           </div>
 
-          <div aria-hidden="true" className="mt-14 h-px w-full bg-ink/15 sm:mt-16" />
+          <div
+            aria-hidden="true"
+            className="mt-14 h-px bg-ink/15 sm:mt-16 lg:-mr-10 xl:-mr-20"
+          />
         </div>
       </section>
 
@@ -127,8 +154,8 @@ export default function Application() {
                 Where you can use it
               </p>
 
-              <h2 className="mt-5 max-w-[20ch] font-sans text-[2rem] font-bold leading-[1.06] tracking-[-0.02em] text-ink text-balance sm:text-[2.5rem]">
-                {category.name} on site
+              <h2 className="mt-5 font-sans text-[clamp(1.75rem,3.2vw,2.5rem)] font-bold leading-[1.06] tracking-[-0.02em] text-ink">
+                {category.name} <span className="text-brand-600">on site</span>
               </h2>
             </div>
 

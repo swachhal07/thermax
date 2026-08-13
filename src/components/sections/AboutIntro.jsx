@@ -95,7 +95,7 @@ export default function AboutIntro() {
               <span className="block h-[2px] w-3 bg-brand-600" />
               <span className="block h-[2px] w-1.5 bg-brand-600/40" />
             </span>
-            About us
+            Where it all started
           </span>
           <span aria-hidden="true" className="hidden text-[0.6875rem] text-ink/35 sm:block">
             Thermax &times; MV Dugar Group

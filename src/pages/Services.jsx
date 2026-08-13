@@ -36,20 +36,11 @@ export default function Services() {
           </div>
           <div aria-hidden="true" className="h-px w-full bg-ink/15" />
 
-          <div className="mt-12 grid items-end gap-y-8 sm:mt-14 lg:grid-cols-12 lg:gap-x-12">
-            <Rise className="lg:col-span-8">
+          <div className="mt-12 sm:mt-14">
+            <Rise>
               <h1 className="max-w-[14ch] font-sans text-[3rem] font-extrabold leading-[0.94] tracking-[-0.03em] text-ink text-balance sm:text-[4rem] lg:text-[5rem]">
-                What we <span className="text-brand-600">stock.</span>
+                What we <span className="text-brand-600">have.</span>
               </h1>
-            </Rise>
-
-            <Rise delay={140} className="lg:col-span-4 lg:justify-self-end lg:text-right">
-              <p className="font-mono text-[clamp(3rem,6vw,4.5rem)] font-medium leading-none tracking-[-0.02em] tabular-nums text-ink">
-                {String(categories.length).padStart(2, '0')}
-              </p>
-              <p className="mt-3 font-mono text-[0.6875rem] uppercase tracking-[0.22em] text-muted">
-                Ranges held on the floor
-              </p>
             </Rise>
           </div>
 
