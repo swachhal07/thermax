@@ -6,8 +6,7 @@ import Home from '@/pages/Home'
 const About = lazy(() => import('@/pages/About'))
 const Services = lazy(() => import('@/pages/Services'))
 const Application = lazy(() => import('@/pages/Application'))
-const Blog = lazy(() => import('@/pages/Blog'))
-const Post = lazy(() => import('@/pages/Post'))
+const Clients = lazy(() => import('@/pages/Clients'))
 const Careers = lazy(() => import('@/pages/Careers'))
 const Contact = lazy(() => import('@/pages/Contact'))
 const NotFound = lazy(() => import('@/pages/NotFound'))
@@ -46,18 +45,10 @@ export default function AppRoutes() {
           }
         />
         <Route
-          path="blog"
+          path="clients"
           element={
             <Suspense fallback={<RouteFallback />}>
-              <Blog />
-            </Suspense>
-          }
-        />
-        <Route
-          path="blog/:slug"
-          element={
-            <Suspense fallback={<RouteFallback />}>
-              <Post />
+              <Clients />
             </Suspense>
           }
         />

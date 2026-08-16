@@ -2,7 +2,7 @@ import AboutHero from '@/components/sections/AboutHero'
 import Rise from '@/components/ui/Rise'
 import { cn } from '@/lib/utils'
 import crewPlate from '@/assets/images/images.jpg'
-import labPlate from '@/assets/about-plate-lab.webp'
+import labPlate from '@/assets/images/30167718_1820318334680020_4472750120941663628_o.jpg'
 
 function Kicker({ className, children }) {
   return (
@@ -151,12 +151,12 @@ export default function About() {
               <figure className="relative overflow-hidden bg-ink/5 shadow-[0_40px_80px_-52px_rgba(20,23,28,0.55)]">
                 <img
                   src={labPlate}
-                  width={1600}
-                  height={1064}
+                  width={2048}
+                  height={1536}
                   loading="lazy"
                   decoding="async"
-                  alt="Chemist in safety glasses drawing a sample from a separatory funnel inside a fume hood"
-                  className="aspect-[4/5] w-full object-cover object-[62%_50%]"
+                  alt="Site team measuring the slump of freshly mixed concrete with a tape against an inverted slump cone"
+                  className="aspect-[4/5] w-full object-cover object-[58%_62%]"
                 />
                 <div
                   aria-hidden="true"
@@ -164,7 +164,7 @@ export default function About() {
                 />
                 <figcaption className="absolute bottom-4 left-5 flex items-center gap-2.5 font-mono text-[0.625rem] tracking-[0.18em] text-white/85 uppercase">
                   <span aria-hidden="true" className="block h-[2px] w-3 bg-brand-500" />
-                  Sample draw — batch check
+                  Slump test — mix check
                 </figcaption>
                 <div
                   aria-hidden="true"

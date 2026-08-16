@@ -15,6 +15,11 @@ dist-ssr
 # Local tooling cache, not shared config
 .impeccable/
 
+# Camera/drone originals. Kept locally for re-cropping; the web-sized
+# derivatives committed alongside them are what the site actually imports.
+src/assets/images/DJI_*.jpg
+src/assets/images/Sprayed-concrete.jpg
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

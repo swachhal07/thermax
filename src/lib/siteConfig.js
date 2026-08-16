@@ -27,7 +27,7 @@ export const navLinks = [
   { label: 'Home', to: '/' },
   { label: 'About', to: '/about' },
   { label: 'Applications', to: '/services' },
-  { label: 'Blog', to: '/blog' },
+  { label: 'Clients', to: '/clients' },
 ]
 
-export const footerLinks = [...navLinks, { label: 'Careers', to: '/careers' }]
+export const footerLinks = [...navLinks]

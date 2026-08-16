@@ -22,6 +22,7 @@ const LAYOUT = [
   { span: 'lg:col-span-5', wide: false },
   { span: 'lg:col-span-5', wide: false },
   { span: 'lg:col-span-7', wide: true },
+  { span: 'sm:col-span-2 lg:col-span-12', wide: true },
 ]
 
 export default function ServicesGrid() {
@@ -42,7 +43,7 @@ export default function ServicesGrid() {
           <h2
             className="mx-auto max-w-3xl text-balance font-sans text-[2.5rem] font-bold leading-[1.04] tracking-[-0.02em] text-ink sm:text-5xl lg:text-[3.25rem]"
           >
-            Four kinds of pour, <span className="text-brand-600">one warehouse</span>
+            One catalogue, <span className="text-brand-600">specified per sector</span>
           </h2>
 
           <div className="mt-9 flex items-center gap-5 sm:mt-11">

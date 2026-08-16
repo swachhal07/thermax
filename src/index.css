@@ -40,6 +40,15 @@
   }
 }
 
+@keyframes rail {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
 @keyframes drift {
   from {
     transform: scale(1.13);
@@ -55,6 +64,9 @@
   --animate-note: note 420ms cubic-bezier(0.32, 0.72, 0, 1) both;
 
   --animate-drift: drift 9s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+
+  /* Deliberately linear — a dwell meter that eases would misreport time left. */
+  --animate-rail: rail 6500ms linear both;
 }
 
 @layer components {

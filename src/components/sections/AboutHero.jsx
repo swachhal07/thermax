@@ -153,7 +153,7 @@ export default function AboutHero() {
           </div>
         </div>
 
-        <div data-about-hero="lines" className="mt-18 lg:-mr-10 xl:-mr-20 lg:mt-20">
+        <div data-about-hero="lines" className="mt-10 lg:mt-12 lg:-mr-10 xl:-mr-20">
 
           <div className="flex items-end justify-end gap-6 pb-4 font-mono text-[0.8125rem] tracking-[0.2em] text-muted uppercase">
             <Link
@@ -166,11 +166,12 @@ export default function AboutHero() {
           </div>
           <div aria-hidden="true" className="h-px bg-ink/15" />
 
-          <ul className="grid list-none grid-cols-1 divide-y divide-ink/10 p-0 sm:grid-cols-2 lg:grid-cols-4 lg:divide-y-0">
+          <ul className="grid list-none grid-cols-1 divide-y divide-ink/10 p-0 sm:grid-cols-2 lg:grid-cols-5 lg:divide-y-0">
             {services.map(({ slug, code, title }, i) => (
               <li
                 key={slug}
                 className={cn(
+                  'relative',
                   i % 2 === 1 && 'sm:border-l sm:border-ink/12',
                   i > 0 && 'lg:border-l lg:border-ink/12',
                 )}
@@ -178,22 +179,40 @@ export default function AboutHero() {
                 <Link
                   to="/services"
                   className={cn(
-                    'group/line flex h-full flex-col gap-2.5 py-5 transition-colors duration-300',
+                    'group/line flex h-full flex-col gap-3 py-6 lg:min-h-[7.5rem]',
                     i % 2 === 1 && 'sm:pl-6',
                     i > 0 && 'lg:pl-6',
                   )}
                 >
-                  <span className="font-mono text-[0.625rem] tracking-[0.2em] text-ink/45 uppercase">
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      'absolute top-0 left-0 h-[2px] w-full origin-left scale-x-0 bg-brand-600',
+                      'transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover/line:scale-x-100',
+                      'motion-reduce:transition-none',
+                    )}
+                  />
+
+                  <span className="font-mono text-[0.625rem] tracking-[0.2em] text-ink/45 uppercase transition-colors duration-300 group-hover/line:text-brand-600">
                     {code}
                   </span>
-                  <span className="flex items-center gap-2.5 text-[0.9375rem] leading-snug font-semibold text-pretty text-ink transition-colors duration-300 group-hover/line:text-brand-600">
+
+                  <span className="mt-auto flex items-start gap-2.5 text-[0.9375rem] leading-snug font-semibold text-pretty text-ink transition-colors duration-300 group-hover/line:text-brand-600">
                     {title}
-                    <span
+                    <svg
+                      viewBox="0 0 22 10"
                       aria-hidden="true"
-                      className="shrink-0 leading-none text-ink/30 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover/line:translate-x-1 group-hover/line:text-brand-600"
+                      className="mt-[0.35em] h-2 w-4 shrink-0 text-ink/25 transition-[transform,color] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover/line:translate-x-1 group-hover/line:text-brand-600 motion-reduce:transition-none"
                     >
-                      →
-                    </span>
+                      <path
+                        d="M0 5h20M16 1l4 4-4 4"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
                   </span>
                 </Link>
               </li>

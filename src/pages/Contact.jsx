@@ -12,10 +12,11 @@ const LINE_LABELS = {
   tunnels: 'Tunnels',
 }
 
-const LINES = [
-  ...services.map((s) => ({ value: s.slug, code: s.code, label: LINE_LABELS[s.slug] ?? s.title })),
-  { value: 'unsure', code: '—', label: 'Not sure yet' },
-]
+const LINES = services.map((s) => ({
+  value: s.slug,
+  code: s.code,
+  label: LINE_LABELS[s.slug] ?? s.title,
+}))
 
 const ASSURANCES = [
   {
@@ -32,7 +33,7 @@ const ASSURANCES = [
   },
 ]
 
-const EMPTY = { name: '', company: '', email: '', phone: '', line: '', message: '' }
+const EMPTY = { name: '', company: '', email: '', phone: '', lines: [], message: '' }
 
 const MAP_EMBED = `https://www.google.com/maps?q=${encodeURIComponent(siteConfig.mapQuery)}&z=17&output=embed`
 const MAP_DIRECTIONS = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(siteConfig.mapQuery)}`
@@ -108,6 +109,16 @@ export default function Contact() {
     setForm((prev) => ({ ...prev, [name]: value }))
     setErrors((prev) => (prev[name] ? { ...prev, [name]: undefined } : prev))
   }
+
+  // Product line is a multi-select: a job can want admixtures for the deck and
+  // waterproofing for the tunnel in the same enquiry.
+  const toggleLine = (value) => () =>
+    setForm((prev) => ({
+      ...prev,
+      lines: prev.lines.includes(value)
+        ? prev.lines.filter((v) => v !== value)
+        : [...prev.lines, value],
+    }))
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -327,37 +338,37 @@ export default function Contact() {
                             className="mt-[0.35em] block h-[2px] w-3 shrink-0 bg-brand-600"
                           />
                           Product line
-                          <span className="text-ink/40">optional</span>
+                          <span className="text-ink/40">optional &mdash; pick any</span>
                         </legend>
 
                         <div className="flex flex-wrap gap-2.5">
                           {LINES.map((line) => (
                             <label key={line.value} className="cursor-pointer">
                               <input
-                                type="radio"
-                                name="line"
+                                type="checkbox"
+                                name="lines"
                                 value={line.value}
-                                checked={form.line === line.value}
-                                onChange={set('line')}
+                                checked={form.lines.includes(line.value)}
+                                onChange={toggleLine(line.value)}
                                 className="peer sr-only"
                               />
                               <span
                                 className={cn(
-                                  'flex items-center gap-2.5 rounded-full py-3 pl-4 pr-5 text-[0.875rem] font-medium ring-1',
-                                  'transition-[background-color,color,box-shadow,transform] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]',
-                                  'bg-[#f2f2f5] text-ink/75 ring-ink/[0.07] shadow-[inset_0_1px_2.5px_rgba(20,23,28,0.09),inset_0_-1px_0_rgba(255,255,255,0.7)]',
-                                  'hover:bg-[#eeeef2] hover:text-ink hover:ring-ink/[0.14]',
+                                  'flex items-center gap-2.5 rounded-full py-3 pr-5 pl-4 text-[0.875rem] font-medium ring-1',
+                                  'transition-[background-color,color,box-shadow] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]',
+                                  'bg-[#f2f2f5] text-ink/75 ring-ink/[0.07]',
                                   'peer-checked:bg-ink peer-checked:text-white peer-checked:ring-ink',
-                                  'peer-checked:shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_10px_22px_-14px_rgba(20,23,28,0.7)]',
                                   'peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-600',
-                                  'active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:transform-none',
+                                  'motion-reduce:transition-none',
                                 )}
                               >
                                 <span
                                   aria-hidden="true"
                                   className={cn(
                                     'font-mono text-[0.625rem] tracking-[0.14em] transition-colors duration-300',
-                                    form.line === line.value ? 'text-white/55' : 'text-brand-600',
+                                    form.lines.includes(line.value)
+                                      ? 'text-white/55'
+                                      : 'text-brand-600',
                                   )}
                                 >
                                   {line.code}

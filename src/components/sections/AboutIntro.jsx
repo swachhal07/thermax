@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Rise from '@/components/ui/Rise'
 import { cn } from '@/lib/utils'
@@ -27,33 +27,13 @@ const TABS = [
 const LEDGER = [
   { term: 'Quality control', value: 'Tested at every batch' },
   { term: 'Technical support', value: 'On site, in person' },
-  { term: 'Stock', value: 'Held in Kathmandu' },
+  { term: 'Stock', value: 'Held in Nepal' },
 ]
 
 export default function AboutIntro() {
   const [active, setActive] = useState(TABS[0].id)
   const activeIndex = TABS.findIndex((t) => t.id === active)
   const tabRefs = useRef([])
-  const tablistRef = useRef(null)
-
-  const [bar, setBar] = useState({ left: 0, width: 0 })
-
-  useLayoutEffect(() => {
-    const list = tablistRef.current
-    const tab = tabRefs.current[activeIndex]
-    if (!list || !tab) return
-
-    const measure = () => {
-      const { width } = tab.getBoundingClientRect()
-      if (width) setBar({ left: tab.offsetLeft, width })
-    }
-    measure()
-
-    const ro = new ResizeObserver(measure)
-    ro.observe(list)
-    ro.observe(tab)
-    return () => ro.disconnect()
-  }, [activeIndex])
 
   const onKeyDown = (e) => {
     const dir =
@@ -97,9 +77,6 @@ export default function AboutIntro() {
             </span>
             Where it all started
           </span>
-          <span aria-hidden="true" className="hidden text-[0.6875rem] text-ink/35 sm:block">
-            Thermax &times; MV Dugar Group
-          </span>
         </div>
         <div aria-hidden="true" className="h-px w-full bg-ink/15" />
 
@@ -123,11 +100,10 @@ export default function AboutIntro() {
 
             <div className="mt-8">
               <div
-                ref={tablistRef}
                 role="tablist"
                 aria-label="About Thermax"
                 onKeyDown={onKeyDown}
-                className="relative flex border-b border-ink/15"
+                className="flex flex-wrap items-center gap-x-7 gap-y-3 sm:gap-x-9"
               >
                 {TABS.map((tab, i) => (
                   <button
@@ -141,79 +117,59 @@ export default function AboutIntro() {
                     tabIndex={active === tab.id ? 0 : -1}
                     onClick={() => setActive(tab.id)}
                     className={cn(
-                      'group flex flex-col gap-2 pt-1 pb-3.5 text-left',
-                      'transition-transform duration-150 active:translate-y-px',
-                      i > 0 && 'ml-7 sm:ml-11',
+                      'group relative py-1 text-[1.0625rem] tracking-[-0.01em]',
+                      'transition-[color,transform] duration-300 active:translate-y-px',
+                      active === tab.id
+                        ? 'font-semibold text-ink'
+                        : 'font-medium text-ink/45 hover:text-ink/75',
                     )}
                   >
+                    {tab.label}
                     <span
                       aria-hidden="true"
                       className={cn(
-                        'font-mono text-[0.625rem] tracking-[0.2em] tabular-nums transition-colors duration-300',
-                        active === tab.id
-                          ? 'text-brand-600'
-                          : 'text-ink/30 group-hover:text-brand-600/60',
+                        'absolute -bottom-0.5 left-0 h-[1.5px] w-full origin-left bg-brand-600',
+                        'transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]',
+                        active === tab.id ? 'scale-x-100' : 'scale-x-0',
                       )}
-                    >
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <span
-                      className={cn(
-                        'text-[0.9375rem] transition-colors duration-300 sm:text-base',
-                        active === tab.id
-                          ? 'font-semibold text-ink'
-                          : 'text-ink/55 group-hover:text-ink',
-                      )}
-                    >
-                      {tab.label}
-                    </span>
+                    />
                   </button>
                 ))}
-
-                <span
-                  aria-hidden="true"
-                  style={{ transform: `translateX(${bar.left}px) scaleX(${bar.width})` }}
-                  className="absolute -bottom-px left-0 h-0.5 w-px origin-left bg-brand-600 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
-                />
               </div>
 
-              <div className="mt-6 grid">
-                {TABS.map((tab) => (
-                  <p
-                    key={tab.id}
-                    role="tabpanel"
-                    id={`${tab.id}-panel`}
-                    aria-labelledby={`${tab.id}-tab`}
-                    aria-hidden={active !== tab.id}
-                    className={cn(
-                      'col-start-1 row-start-1 max-w-[56ch] text-base leading-relaxed text-ink/75',
-                      'transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]',
-                      active === tab.id
-                        ? 'opacity-100'
-                        : 'pointer-events-none opacity-0 motion-safe:translate-y-1.5',
-                    )}
-                  >
-                    {tab.body}
-                  </p>
-                ))}
+              <div className="mt-7">
+                <div className="grid">
+                  {TABS.map((tab) => (
+                    <p
+                      key={tab.id}
+                      role="tabpanel"
+                      id={`${tab.id}-panel`}
+                      aria-labelledby={`${tab.id}-tab`}
+                      aria-hidden={active !== tab.id}
+                      className={cn(
+                        'col-start-1 row-start-1 max-w-[46ch] font-sans text-[1.1875rem] leading-[1.6] tracking-[-0.01em] text-pretty text-ink/85 sm:text-[1.3125rem]',
+                        'transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]',
+                        active === tab.id
+                          ? 'opacity-100'
+                          : 'pointer-events-none opacity-0 motion-safe:translate-y-2',
+                      )}
+                    >
+                      {tab.body}
+                    </p>
+                  ))}
+                </div>
               </div>
             </div>
 
             <div>
-              <dl className="mt-12 border-t border-ink/15">
+              <dl className="mt-12 border-t border-ink/12">
                 {LEDGER.map(({ term, value }) => (
                   <div
                     key={term}
-                    className="flex flex-col gap-1 border-b border-ink/15 py-3.5 sm:flex-row sm:items-baseline sm:gap-4"
+                    className="grid gap-x-6 gap-y-1 border-b border-ink/12 py-4 sm:grid-cols-[10.5rem_minmax(0,1fr)] sm:items-baseline"
                   >
-                    <dt className="font-mono text-[0.625rem] tracking-[0.2em] whitespace-nowrap text-brand-600 uppercase">
-                      {term}
-                    </dt>
-                    <span
-                      aria-hidden="true"
-                      className="hidden sm:mb-1.5 sm:block sm:min-w-6 sm:flex-1 sm:border-b sm:border-dotted sm:border-ink/25"
-                    />
-                    <dd className="text-[0.9375rem] text-ink/85 sm:text-right sm:whitespace-nowrap">
+                    <dt className="text-[0.9375rem] leading-snug text-ink/55">{term}</dt>
+                    <dd className="text-[1.0625rem] leading-snug font-semibold text-ink">
                       {value}
                     </dd>
                   </div>
@@ -298,11 +254,12 @@ export default function AboutIntro() {
               </div>
 
               <div className="field-grain col-span-2 flex h-40 flex-col justify-between bg-brand-600 p-5 sm:h-56 lg:h-full">
-                <svg viewBox="0 0 12 16" aria-hidden="true" className="h-5 w-4 fill-white">
-                  <path d="M7 0L0 9h4l-1 7 8-10H7l1-6z" />
-                </svg>
-                <p className="font-mono text-[0.625rem] leading-[1.7] tracking-[0.16em] text-white uppercase">
-                  Specified &amp; supported across Nepal
+                <span aria-hidden="true" className="flex shrink-0 flex-col gap-[3px]">
+                  <span className="block h-[2px] w-6 bg-white" />
+                  <span className="block h-[2px] w-3 bg-white/45" />
+                </span>
+                <p className="max-w-[16ch] text-[1.0625rem] leading-[1.3] font-semibold tracking-[-0.01em] text-balance text-white">
+                  Specified and supported across Nepal.
                 </p>
               </div>
             </div>

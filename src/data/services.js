@@ -45,4 +45,15 @@ export const services = [
       'A crew standing at the mouth of a concrete-lined tunnel portal cut into a sheer rock face',
     focus: '50% 50%',
   },
+  {
+    slug: 'restoration',
+    code: 'RST',
+    title: 'Repair & Restoration',
+    summary:
+      'Repair mortars, crack injection, and protective systems for structures already standing.',
+    body: 'Cementitious and epoxy repair mortars, micro-concretes for section loss, crack and void injection resins, corrosion inhibitors for exposed reinforcement, and anti-carbonation coatings — chemistry for putting cover, strength, and service life back into concrete that has already been in the weather.',
+    spec: ['Repair mortars', 'Crack injection', 'Corrosion inhibitors', 'Protective coatings'],
+    imageAlt: 'A gloved hand working repair mortar across a concrete surface with a steel float',
+    focus: '50% 50%',
+  },
 ]

@@ -38,8 +38,8 @@ export default function Services() {
 
           <div className="mt-12 sm:mt-14">
             <Rise>
-              <h1 className="max-w-[14ch] font-sans text-[3rem] font-extrabold leading-[0.94] tracking-[-0.03em] text-ink text-balance sm:text-[4rem] lg:text-[5rem]">
-                What we <span className="text-brand-600">have.</span>
+              <h1 className="font-sans text-[clamp(1.5rem,6.6vw,5rem)] leading-[1.02] font-extrabold tracking-[-0.03em] whitespace-nowrap text-ink">
+                We Have Solution <span className="text-brand-600">For.</span>
               </h1>
             </Rise>
           </div>
