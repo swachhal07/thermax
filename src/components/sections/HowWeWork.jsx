@@ -10,7 +10,14 @@ export default function HowWeWork() {
     >
       <div className="mx-auto w-full max-w-[84rem] px-5 sm:px-10">
         <div className="grid grid-cols-1 gap-y-14 lg:grid-cols-[minmax(0,25rem)_minmax(0,1fr)] lg:gap-x-24 lg:gap-y-0">
-          <div className="lg:sticky lg:top-32 lg:self-start">
+          {/* A sticky element has its offset recomputed on every scroll frame it
+              is pinned for. Unpromoted, that means repainting this whole column
+              each frame — including the pill button's two-layer 30px-blur shadow,
+              which is the expensive part. The hint gives it a layer so the
+              compositor can move it without repainting anything. Scoped to lg
+              because it isn't sticky below that, and it is a ~400x500 box rather
+              than a full-viewport plate, so the layer is cheap to hold. */}
+          <div className="lg:sticky lg:top-32 lg:self-start lg:[will-change:transform]">
             <Rise from="left">
               <p className="mb-6 flex w-fit items-center gap-3 font-mono text-[0.8125rem] uppercase tracking-[0.2em] text-ink">
                 <span aria-hidden="true" className="flex shrink-0 flex-col gap-[2px]">

@@ -17,7 +17,10 @@ import roadsPlateB from '@/assets/images/hero-road-02.jpg'
 import tunnelsPlateA from '@/assets/images/hero-tunnel-01.jpg'
 import tunnelsPlateB from '@/assets/images/glo-shotcrete-05.webp'
 import restorationPlateA from '@/assets/images/Linjebygg-surface-treatment-4.jpg'
-import restorationPlateB from '@/assets/images/Pouring_concrete-e1745414985283.webp'
+// Resized from a 2522×1680 original to match the rest of the set at 1920w. At
+// 4.2MP it was decoding half again as much bitmap as any other plate for pixels
+// no screen ever showed.
+import restorationPlateB from '@/assets/images/hero-restoration-02.webp'
 
 // The backdrop is not decorative: every plate belongs to one of the applications
 // in the index below it, so the photo and the highlighted name always agree. An
@@ -89,6 +92,35 @@ function useIndexFollow(rowRef, index) {
   }, [rowRef, index])
 }
 
+// Ten full-bleed plates fetched at once starve the first one — the LCP — and
+// mount ten compositor layers before anything has moved. Worse, they used to
+// accumulate: by the end of one pass all ten were live, ~86MB of decoded bitmap
+// in stacked full-viewport layers that the compositor carries on every frame
+// whether or not any of it is visible. Hold a sliding window instead — the plate
+// on screen, the one fading out behind it, and the one after. Anything else is
+// evicted; by the time a plate is needed again it has had a full dwell to arrive
+// and it comes back from cache.
+const WINDOW = 3
+
+function useMountedFrames(index) {
+  const [mounted, setMounted] = useState(() => [0, 1 % FRAMES.length])
+
+  useEffect(() => {
+    setMounted((prev) => {
+      const next = (index + 1) % FRAMES.length
+      if (prev.length <= WINDOW && prev[0] === index && prev[1] === next) return prev
+
+      // Oldest goes first, so the plate pushed on the previous change — the one
+      // still mid-crossfade — survives exactly one more turn. Slots always land
+      // in this order: [on screen, preloading, fading out].
+      const keep = prev.filter((i) => i !== index && i !== next)
+      return [index, next, ...keep].slice(0, WINDOW)
+    })
+  }, [index])
+
+  return mounted
+}
+
 function useHeroMotion(sectionRef) {
   useLayoutEffect(() => {
     const section = sectionRef.current
@@ -121,6 +153,10 @@ export default function Hero() {
   const [run, setRun] = useState(0)
   useEffect(() => setRun((n) => n + 1), [activeSlide])
 
+  // Slot 2 is the plate on its way out — see useMountedFrames.
+  const mounted = useMountedFrames(index)
+  const [, , outgoing] = mounted
+
   useHeroMotion(sectionRef)
   useIndexFollow(rowRef, activeSlide)
 
@@ -130,43 +166,59 @@ export default function Hero() {
       className="relative isolate flex min-h-[100dvh] flex-col overflow-hidden bg-ink"
     >
       <div aria-hidden="true" className="absolute inset-0 -z-20">
-        {FRAMES.map((frame, i) => (
-          <img
-            key={frame.key}
-            src={frame.src}
-            alt=""
-            width={1920}
-            height={1080}
-            fetchPriority={i === 0 ? 'high' : 'low'}
-            loading="eager"
-            decoding="async"
-            style={{ objectPosition: frame.slide.focus }}
-            className={cn(
-              'absolute inset-0 h-full w-full object-cover will-change-transform',
-              'transition-opacity duration-[1600ms] motion-reduce:transition-none',
-              EASE,
-              i === index
-                ? 'animate-drift opacity-100 motion-reduce:animate-none'
-                : 'scale-[1.04] opacity-0',
-              !inView && '[animation-play-state:paused]',
-            )}
-          />
-        ))}
+        {FRAMES.map((frame, i) => {
+          if (!mounted.includes(i)) return null
+          const on = i === index
+          // The plate mid-fade-out keeps drifting. Dropping the animation the
+          // instant it stopped being current snapped its transform from wherever
+          // the zoom had got to back to the resting scale — a visible jolt at the
+          // start of every crossfade, while it was still fully opaque.
+          const drifting = on || i === outgoing
+
+          return (
+            <img
+              key={frame.key}
+              src={frame.src}
+              alt=""
+              width={1920}
+              height={1080}
+              fetchPriority={i === 0 ? 'high' : 'low'}
+              loading="eager"
+              decoding="async"
+              style={{ objectPosition: frame.slide.focus }}
+              className={cn(
+                'absolute inset-0 h-full w-full object-cover',
+                'transition-opacity duration-[1600ms] motion-reduce:transition-none',
+                EASE,
+                on ? 'opacity-100' : 'opacity-0',
+                // will-change matters on the drifting plates specifically. A
+                // scale animation on a full-viewport image without it lets Chrome
+                // re-rasterise 1.3MP as the scale changes, which is the jank;
+                // with it the layer is rastered once at the animation's peak
+                // scale and the compositor just transforms it. At most two plates
+                // hold a layer at a time — the zoom and the one fading out.
+                drifting
+                  ? 'animate-drift will-change-transform motion-reduce:animate-none'
+                  : 'scale-[1.04]',
+                !inView && '[animation-play-state:paused]',
+              )}
+            />
+          )
+        })}
       </div>
 
       {/* Light hand: an even floor so no plate is ever fully bright, plus a soft
-          scrim centred on the type. The photos should still read as photos. */}
+          scrim centred on the type. The photos should still read as photos.
+          Both live in one element — as two they were two full-viewport paint
+          layers stacked over the plate for no visual difference. Radial is listed
+          first because background layers paint front to back. */}
+      {/* The grain rides on this same element. Plain opacity, not
+          mix-blend-overlay: a blended full-viewport layer has to recomposite
+          against the plate beneath it on every frame of the drift. 0.025 is what
+          the old 0.055 tile at opacity-45 came to. */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-[linear-gradient(to_top,rgba(8,10,13,0.8)_0%,rgba(8,10,13,0.34)_20%,rgba(8,10,13,0.22)_52%,rgba(8,10,13,0.44)_100%)]"
-      />
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-[radial-gradient(64%_44%_at_50%_46%,rgba(8,10,13,0.5),rgba(8,10,13,0.18)_60%,transparent_80%)]"
-      />
-      <div
-        aria-hidden="true"
-        className="field-grain-on-black pointer-events-none absolute inset-0 -z-10 opacity-60 mix-blend-overlay"
+        className="field-grain-on-black pointer-events-none absolute inset-0 -z-10 [--grain-opacity:0.025] [background-image:radial-gradient(64%_44%_at_50%_46%,rgba(8,10,13,0.5),rgba(8,10,13,0.18)_60%,transparent_80%),linear-gradient(to_top,rgba(8,10,13,0.8)_0%,rgba(8,10,13,0.34)_20%,rgba(8,10,13,0.22)_52%,rgba(8,10,13,0.44)_100%)]"
       />
 
       {/* ── Lockup, centred ──────────────────────────────────────────────── */}

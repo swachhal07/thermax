@@ -1,52 +1,60 @@
-/* PLACEHOLDER DATA — replace before this page goes live.
-   Every `name` below is invented. Swap in the real contractors, plants, and
-   project teams supplied. `sector` must match a slug in data/services.js
-   (dams, bridges, roads, tunnels, restoration) — it drives the filter and the
-   sector label on each row. `project` and `year` are optional; drop the keys
-   if you don't want them shown. To add a logo, put the file in
+/* Contractors and project teams we supply. `sector` must match a slug in
+   data/services.js (dams, bridges, roads, tunnels, restoration) — it drives the
+   filter and the sector label on each row.
+
+   `capacityMw` is the installed capacity of the project, kept as a number
+   rather than baked into `project` so the ledger on the Clients page can total
+   it and scale each row's bar against the biggest job in the sector. Leave it
+   off where a job has no capacity figure (repair works, framework contracts) —
+   those rows render without a bar rather than with a zero-width one.
+   `project` and `year` are optional too. To add a logo, put the file in
    assets/images/client-<slug>.webp and it is picked up automatically. */
 
 export const clients = [
   {
-    slug: 'client-one',
-    name: 'Client One',
+    slug: 'sumo-construction',
+    name: 'Sumo Construction & Engineering Pvt. Ltd.',
     sector: 'dams',
-    project: 'Headworks and intake structure',
-    year: '2024',
+    project: 'Lapchey 1 Hydropower Project',
+    capacityMw: 200,
   },
   {
-    slug: 'client-two',
-    name: 'Client Two',
-    sector: 'bridges',
-    project: 'Deck pours and bearing grouting',
-    year: '2024',
+    slug: 'bavari-construction',
+    name: 'Bavari Construction Pvt. Ltd.',
+    sector: 'dams',
+    project: 'Jum Khola Jalvidyut Aayojana',
+    capacityMw: 56,
   },
   {
-    slug: 'client-three',
-    name: 'Client Three',
-    sector: 'roads',
-    project: 'Pavement curing and sub-base stabilisation',
-    year: '2023',
+    slug: 'bhugol-infrastructure',
+    name: 'Bhugol Infrastructure Company Pvt. Ltd.',
+    sector: 'dams',
+    project: 'Bhotekoshi Rural Municipality-5, Sindhupalchok',
+    capacityMw: 46,
   },
   {
-    slug: 'client-four',
-    name: 'Client Four',
-    sector: 'tunnels',
-    project: 'Shotcrete and portal waterproofing',
-    year: '2023',
+    slug: 'dhaulagiri-construction',
+    name: 'Dhaulagiri Construction & Development Pvt. Ltd.',
+    sector: 'dams',
+    project: 'Aauy Malun Hydropower Project',
+    capacityMw: 21,
   },
   {
-    slug: 'client-five',
-    name: 'Client Five',
+    slug: 'rasuwa-hydropower',
+    name: 'Rasuwa Hydropower Limited',
+    sector: 'dams',
+    project: 'Phalakhu Khola Hydropower Project',
+    capacityMw: 7.29,
+  },
+  {
+    slug: 'rj-construction',
+    name: 'R.J. Construction Company Pvt. Ltd.',
     sector: 'restoration',
-    project: 'Pier repair and protective coating',
-    year: '2023',
   },
   {
-    slug: 'client-six',
-    name: 'Client Six',
-    sector: 'dams',
-    project: 'Spillway repair',
-    year: '2022',
+    slug: 'milan-multi-construction',
+    name: 'Milan Multi Construction Pvt. Ltd.',
+    sector: 'restoration',
+    project: 'Government repair works',
   },
 ]

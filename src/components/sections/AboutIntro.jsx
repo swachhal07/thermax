@@ -56,12 +56,14 @@ export default function AboutIntro() {
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 [background-image:linear-gradient(to_right,rgba(20,23,28,0.055)_1px,transparent_1px),linear-gradient(to_bottom,rgba(20,23,28,0.055)_1px,transparent_1px)] [background-size:5.5rem_5.5rem] [mask-image:radial-gradient(120%_75%_at_50%_0%,black,transparent_78%)]"
-      />
-
-      <div
-        aria-hidden="true"
-        className="field-grain-on-white pointer-events-none absolute inset-0 -z-10"
+        // The fade is a white radial painted over the grid rather than a
+        // mask-image. A mask forces an offscreen buffer the size of the section,
+        // rasterised the moment it scrolls in; over a white background this
+        // reads identically and paints in one pass. The grain rides here too,
+        // rather than on a second full-section element stacked over this one —
+        // this section is ~1200px tall, so each overlay is a lot of area to
+        // re-raster as it scrolls in.
+        className="field-grain-on-white pointer-events-none absolute inset-0 -z-10 [background-image:radial-gradient(120%_75%_at_50%_0%,transparent,white_78%),linear-gradient(to_right,rgba(20,23,28,0.055)_1px,transparent_1px),linear-gradient(to_bottom,rgba(20,23,28,0.055)_1px,transparent_1px)] [background-size:auto,5.5rem_5.5rem,5.5rem_5.5rem]"
       />
       <div
         aria-hidden="true"

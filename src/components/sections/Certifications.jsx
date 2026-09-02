@@ -36,7 +36,7 @@ export default function Certifications() {
 
       <div
         ref={trackRef}
-        className="relative mt-10 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_5rem,black_calc(100%-5rem),transparent)] motion-reduce:overflow-x-auto sm:mt-14"
+        className="relative mt-10 overflow-hidden motion-reduce:overflow-x-auto sm:mt-14"
       >
         <div
           onMouseEnter={() => setHovered(true)}
@@ -58,6 +58,7 @@ export default function Certifications() {
                     alt={copy === 0 ? cert.alt : ''}
                     width={499}
                     height={352}
+                    loading="lazy"
                     decoding="async"
                     className="h-28 w-auto sm:h-36"
                   />
@@ -66,6 +67,19 @@ export default function Certifications() {
             </ul>
           ))}
         </div>
+
+        {/* Edge fades painted in the section colour rather than a mask-image. A
+            mask over a strip that never stops moving allocates an offscreen
+            buffer the full width of the track and recomposites it every frame;
+            over a flat background these two gradients read identically. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-[#f4f4f6] to-transparent"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-[#f4f4f6] to-transparent"
+        />
       </div>
     </section>
   )

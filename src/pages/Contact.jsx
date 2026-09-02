@@ -1,9 +1,11 @@
-import { useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import Rise from '@/components/ui/Rise'
+import { gsap, prefersReducedMotion } from '@/lib/gsap'
 import { siteConfig } from '@/lib/siteConfig'
 import { services } from '@/data/services'
 import { cn } from '@/lib/utils'
 import siteWork from '@/assets/images/about-site.webp'
+import pourImage from '@/assets/images/Pouring_concrete-e1745414985283.webp'
 
 const LINE_LABELS = {
   dams: 'Dams',
@@ -97,7 +99,38 @@ function ErrorNote({ id, children }) {
   )
 }
 
+/* The contact hero is the page's first viewport, so it gets a composed intro
+   rather than the generic per-block fade Rise gives the sections below. Same
+   idiom as the about hero: kicker leads, headline and copy overlap into it, and
+   the photograph arrives from the right on its own slightly later track while
+   the rows at the foot come up last. Everything is opacity/transform,
+   and `from` tweens mean the static markup is the finished state — so with
+   reduced motion, or before the script runs, the section is already complete. */
+function useContactHeroMotion(sectionRef) {
+  useLayoutEffect(() => {
+    const section = sectionRef.current
+    if (!section || prefersReducedMotion()) return
+
+    const ctx = gsap.context(() => {
+      gsap
+        .timeline({ defaults: { duration: 1.05, ease: 'power3.out' } })
+        .from('[data-contact-hero="kicker"]', { opacity: 0, y: 14, duration: 0.7 })
+        .from('[data-contact-hero="headline"] > span', { opacity: 0, y: 34, stagger: 0.09 }, '-=0.45')
+        .from('[data-contact-hero="sub"]', { opacity: 0, y: 22 }, '-=0.85')
+        .from('[data-contact-hero="cta"]', { opacity: 0, y: 18, duration: 0.9 }, '-=0.8')
+        .from('[data-contact-hero="figure"]', { opacity: 0, x: 44, duration: 1.3 }, 0.25)
+        .from('[data-contact-hero="plate"]', { opacity: 0, y: 22, duration: 1 }, '-=0.7')
+        .from('[data-contact-hero="rows"] > *', { opacity: 0, y: 14, stagger: 0.08 }, '-=0.85')
+    }, section)
+
+    return () => ctx.revert()
+  }, [sectionRef])
+}
+
 export default function Contact() {
+  const heroRef = useRef(null)
+  useContactHeroMotion(heroRef)
+
   const [form, setForm] = useState(EMPTY)
   const [errors, setErrors] = useState({})
   const [status, setStatus] = useState('idle')
@@ -149,109 +182,231 @@ export default function Contact() {
 
   return (
     <>
-      <section className="relative isolate overflow-hidden bg-white pb-16 pt-6 sm:pb-20 sm:pt-10">
+      {/* The contact opening used to be a white page split 7/5: a column of copy
+          beside a column of contact details, both drawn in the same hairlines
+          and mono labels, both the same weight. Nothing led, the right half read
+          as leftover, and the full width of the page was never used.
+
+      {/* The contact opening used to be a white page split 7/5: a column of copy
+          beside a column of contact details, both drawn in the same hairlines
+          and mono labels, both the same weight. Nothing led, the right half read
+          as leftover, and the full width of the page was never used.
+
+      {/* Four passes on this section all failed the same way: every idea that
+          got added — a numbered strip of the three things to send, a tinted
+          board of four labelled cells, a corner bloom — was defensible on its
+          own and made the page heavier in aggregate. What is actually needed at
+          the top of a contact page is a headline, one line of context, and a
+          number to call.
+
+          So: three blocks, one hairline, and a lot of air. The three things to
+          send were cut outright — the form below asks for all of them by name,
+          and listing them here was the page saying the same thing twice. */}
+      <section
+        ref={heroRef}
+        className="field-grain-on-white relative isolate overflow-hidden bg-white pb-14 pt-6 sm:pb-20 sm:pt-10"
+      >
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 -z-10 [background-image:linear-gradient(to_right,rgba(20,23,28,0.055)_1px,transparent_1px),linear-gradient(to_bottom,rgba(20,23,28,0.055)_1px,transparent_1px)] [background-size:5.5rem_5.5rem] [mask-image:radial-gradient(110%_70%_at_50%_0%,black,transparent_75%)]"
+          className="pointer-events-none absolute inset-0 -z-10 [background-image:linear-gradient(to_right,rgba(20,23,28,0.045)_1px,transparent_1px),linear-gradient(to_bottom,rgba(20,23,28,0.045)_1px,transparent_1px)] [background-size:5.5rem_5.5rem] [mask-image:radial-gradient(95%_60%_at_50%_0%,black,transparent_72%)]"
         />
 
-        <div className="mx-auto w-full max-w-[84rem] px-5 sm:px-10">
-          <div className="flex items-end justify-between gap-6 pb-4 font-mono text-[0.8125rem] uppercase tracking-[0.2em] text-muted">
-            <span className="flex items-center gap-3 text-ink">
-              <span aria-hidden="true" className="flex shrink-0 flex-col gap-[2px]">
-                <span className="block h-[2px] w-3 bg-brand-600" />
-                <span className="block h-[2px] w-1.5 bg-brand-600/40" />
+        <div className="mx-auto w-full max-w-[96rem] px-5 sm:px-10">
+          <div data-contact-hero="kicker">
+            <div className="flex items-end justify-between gap-6 pb-4 font-mono text-[0.8125rem] uppercase tracking-[0.2em] text-muted">
+              <span className="flex items-center gap-3 text-ink">
+                <span aria-hidden="true" className="flex shrink-0 flex-col gap-[2px]">
+                  <span className="block h-[2px] w-3 bg-brand-600" />
+                  <span className="block h-[2px] w-1.5 bg-brand-600/40" />
+                </span>
+                Contact
               </span>
-              Contact
-            </span>
-            <span className="hidden sm:block">Kathmandu</span>
+              <span className="hidden sm:block">{MAP_COORDS}</span>
+            </div>
+            <div aria-hidden="true" className="h-px w-full bg-ink/15" />
           </div>
-          <div aria-hidden="true" className="h-px w-full bg-ink/15" />
 
-          <div className="mt-10 grid gap-y-8 lg:grid-cols-12 lg:gap-x-12">
-            <Rise className="lg:col-span-7">
-              <h1 className="max-w-[22ch] font-sans text-[2.75rem] font-extrabold leading-[1.0] tracking-[-0.025em] text-ink text-balance sm:text-[3.5rem] lg:text-[4.25rem]">
-                Tell us what the <span className="text-brand-600">job needs.</span>
+          {/* Every other page hero on this site sets the headline against a
+              photograph that runs full height and bleeds off the right edge —
+              about, and each of the application pages. Contact was the only one
+              carrying its whole fold on type and hairlines, which is why no
+              amount of re-ruling the columns fixed it: the section was missing
+              the thing the rest of the site uses to hold the right half, not
+              missing a better arrangement of labels. */}
+          <div className="mt-10 grid items-start gap-y-12 pb-12 sm:pb-16 lg:grid-cols-12 lg:gap-x-16">
+            <div className="lg:col-span-6">
+              <h1
+                data-contact-hero="headline"
+                className="font-sans text-[clamp(2.25rem,4.4vw,4rem)] font-extrabold leading-[0.98] tracking-[-0.03em] text-ink text-balance"
+              >
+                Tell us what the job <span className="text-brand-600">needs.</span>
               </h1>
-            </Rise>
 
-            <Rise delay={120} className="lg:col-span-5 lg:self-end">
-              <p className="max-w-[46ch] text-lg leading-relaxed text-muted text-pretty">
+              <p
+                data-contact-hero="sub"
+                className="mt-7 max-w-[52ch] text-base leading-relaxed text-ink/75 text-pretty sm:text-lg"
+              >
                 Not a brochure request. Send the mix, the substrate and the date it
                 has to be on site, and what comes back is a product, a dosage, and
                 the data sheet the recommendation rests on.
               </p>
-            </Rise>
+
+              <a
+                data-contact-hero="cta"
+                href="#brief"
+                className="group mt-9 inline-flex w-fit items-center gap-3 rounded-full bg-ink py-2 pl-6 pr-2 text-[0.9375rem] font-medium text-white shadow-[0_1px_2px_rgba(20,23,28,0.08),0_14px_30px_-18px_rgba(20,23,28,0.5)] transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:shadow-[0_1px_2px_rgba(20,23,28,0.1),0_22px_40px_-18px_rgba(20,23,28,0.55)] active:scale-[0.98] motion-reduce:transition-none"
+              >
+                Write the specification
+                <span
+                  aria-hidden="true"
+                  className="grid h-9 w-9 place-items-center rounded-full bg-white/10 transition-[transform,background-color] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-y-[3px] group-hover:bg-brand-600 motion-reduce:transition-none motion-reduce:group-hover:transform-none"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
+                    <path
+                      d="M12 5.5v13M6.5 13l5.5 5.5L17.5 13"
+                      stroke="currentColor"
+                      strokeWidth="1.25"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+              </a>
+            </div>
+
+            {/* A pour, because that is the deadline the copy is asking about —
+                the date it has to be on site is the day this happens, and the
+                specification either arrived before it or did not.
+
+                It does not bleed past the measure: its right edge is the same
+                one the two rules and the last column of facts sit on, and it
+                takes its height from the copy beside it so neither column ends
+                with a run of dead space under it. It reaches left to the far
+                side of the gutter, which is as wide as it goes without eating
+                the copy's measure; giving it a height floor instead would only
+                move the leftover space into the left column. */}
+            <div
+              data-contact-hero="figure"
+              className="lg:col-span-6 lg:col-start-7 lg:h-full lg:self-stretch"
+            >
+              <figure className="relative overflow-hidden bg-ink/5 shadow-[0_40px_80px_-52px_rgba(20,23,28,0.55)] lg:h-full">
+                <div className="relative h-[17rem] sm:h-[23rem] lg:absolute lg:inset-0 lg:h-full">
+                  <img
+                    src={pourImage}
+                    fetchPriority="high"
+                    decoding="async"
+                    alt="Fresh concrete going down on a site pour, screeded flat while it is still workable"
+                    className="absolute inset-0 h-full w-full object-cover object-[58%_58%]"
+                  />
+                </div>
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-ink/10"
+                />
+              </figure>
+            </div>
           </div>
+        </div>
 
-          <Rise delay={200}>
-            <dl className="mt-12 grid grid-cols-1 border-b border-ink/15 sm:mt-14 sm:grid-cols-2 lg:grid-cols-[1.5fr_1.2fr_1fr_0.9fr]">
-              <div className="border-t border-ink/15 py-6 lg:pr-8">
-                <dt className="font-mono text-[0.625rem] uppercase tracking-[0.22em] text-brand-600">
-                  Phone
-                </dt>
-                <dd className="mt-2">
-                  <div className="flex flex-col gap-1.5">
-                    {[
-                      { number: siteConfig.phone, href: tel },
-                      { number: siteConfig.phoneAlt, href: telAlt },
-                    ].map(({ number, href }) => (
-                      <a
-                        key={number}
-                        href={href}
-                        className="group inline-flex w-fit items-baseline text-[1.375rem] font-semibold leading-none tracking-[-0.01em] text-ink transition-colors duration-300 hover:text-brand-600 sm:text-[1.5rem]"
-                      >
-                        {number}
-                        <span
-                          aria-hidden="true"
-                          className="ml-3 h-[1.5px] w-6 origin-left self-center bg-ink/20 transition-[transform,background-color] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-x-[1.5] group-hover:bg-brand-600 motion-reduce:transition-none motion-reduce:group-hover:transform-none"
-                        />
-                      </a>
-                    ))}
-                  </div>
-                  <p className="mt-2.5 text-[0.875rem] leading-snug text-muted">
-                    Quickest route if a pour is already scheduled.
-                  </p>
-                </dd>
-              </div>
+        {/* The facts run edge to edge rather than stopping at the 84rem measure
+            the copy above uses — the extra width is what keeps four columns
+            from crowding, and the band reads as the floor of the section rather
+            than as one more block stacked inside it. It shares its 96rem
+            measure with the copy above, so the kicker, the headline and the
+            first column of facts all hang off one left edge — and the rule over
+            the facts starts and ends exactly where the rule under the kicker
+            does, rather than running out into the gutters. The first column
+            is given half again the width of the others so both numbers sit on
+            one line; below that they wrap rather than overrun the divider.
 
-              <div className="border-t border-ink/15 py-6 lg:border-l lg:border-ink/15 lg:px-8">
-                <dt className="font-mono text-[0.625rem] uppercase tracking-[0.22em] text-brand-600">
-                  Email
-                </dt>
-                <dd className="mt-2">
+            The top padding sits on the cells, not on the wrapper, so each
+            column's rule starts at the horizontal one and the row is drawn as a
+            connected grid instead of four lines floating under a line. */}
+        <div
+          data-contact-hero="plate"
+          className="mx-auto w-full max-w-[96rem] px-5 sm:px-10"
+        >
+          <dl
+            data-contact-hero="rows"
+            className="grid grid-cols-1 gap-y-8 border-t border-ink/15 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] lg:gap-y-0"
+          >
+            <div className="pt-7">
+              <dt className="font-mono text-[0.6875rem] uppercase tracking-[0.22em] text-muted">
+                Phone
+              </dt>
+              <dd className="mt-2.5 flex flex-wrap items-baseline gap-x-6 gap-y-1">
+                {[
+                  { number: siteConfig.phone, href: tel },
+                  { number: siteConfig.phoneAlt, href: telAlt },
+                ].map(({ number, href }) => (
                   <a
-                    href={`mailto:${siteConfig.email}`}
-                    className="text-[1.0625rem] text-ink transition-colors duration-300 hover:text-brand-600"
+                    key={number}
+                    href={href}
+                    className="w-fit whitespace-nowrap text-[1.1875rem] leading-snug tabular-nums text-ink transition-colors duration-300 hover:text-brand-600"
                   >
-                    {siteConfig.email}
+                    {number}
                   </a>
-                </dd>
-              </div>
+                ))}
+              </dd>
+            </div>
 
-              <div className="border-t border-ink/15 py-6 lg:border-l lg:border-ink/15 lg:px-8">
-                <dt className="font-mono text-[0.625rem] uppercase tracking-[0.22em] text-brand-600">
-                  Warehouse
-                </dt>
-                <dd className="mt-2 text-[1.0625rem] leading-snug text-ink">
+            <div className="pt-7 sm:border-l sm:border-ink/12 sm:pl-8">
+              <dt className="font-mono text-[0.6875rem] uppercase tracking-[0.22em] text-muted">
+                Email
+              </dt>
+              <dd className="mt-2.5">
+                <a
+                  href={`mailto:${siteConfig.email}`}
+                  className="text-[1.1875rem] leading-snug text-ink transition-colors duration-300 hover:text-brand-600"
+                >
+                  {siteConfig.email}
+                </a>
+              </dd>
+            </div>
+
+            <div className="pt-7 lg:border-l lg:border-ink/12 lg:pl-8">
+              <dt className="font-mono text-[0.6875rem] uppercase tracking-[0.22em] text-muted">
+                Warehouse
+              </dt>
+              <dd className="mt-2.5">
+                <a
+                  href={MAP_DIRECTIONS}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group inline-flex items-center gap-2 text-[1.1875rem] leading-snug text-ink transition-colors duration-300 hover:text-brand-600"
+                >
                   {siteConfig.address}
-                </dd>
-              </div>
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                    className="h-3.5 w-3.5 text-ink/35 transition-colors duration-300 group-hover:text-brand-600"
+                  >
+                    <path
+                      d="M6.5 17.5 17.5 6.5M9 6.5h8.5V15"
+                      stroke="currentColor"
+                      strokeWidth="1.75"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </a>
+              </dd>
+            </div>
 
-              <div className="border-t border-ink/15 py-6 lg:border-l lg:border-ink/15 lg:pl-8">
-                <dt className="font-mono text-[0.625rem] uppercase tracking-[0.22em] text-brand-600">
-                  Hours
-                </dt>
-                <dd className="mt-2 text-[1.0625rem] leading-snug text-ink">
-                  {siteConfig.hours}
-                </dd>
-              </div>
-            </dl>
-          </Rise>
+            <div className="pt-7 sm:border-l sm:border-ink/12 sm:pl-8">
+              <dt className="font-mono text-[0.6875rem] uppercase tracking-[0.22em] text-muted">
+                Hours
+              </dt>
+              <dd className="mt-2.5 text-[1.1875rem] leading-snug text-ink">
+                {siteConfig.hours}
+              </dd>
+            </div>
+          </dl>
         </div>
       </section>
 
-      <section className="bg-[#f4f4f6] pb-20 pt-14 sm:pb-28 sm:pt-16">
+      <section id="brief" className="scroll-mt-24 bg-[#f4f4f6] pb-20 pt-14 sm:pb-28 sm:pt-16">
         <div className="mx-auto w-full max-w-[84rem] px-5 sm:px-10">
           <div className="grid grid-cols-1 gap-y-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:gap-x-14 lg:gap-y-0">
             <Rise>
@@ -294,7 +449,7 @@ export default function Contact() {
                           Call {siteConfig.phone}
                           <span
                             aria-hidden="true"
-                            className="grid h-9 w-9 place-items-center rounded-full bg-white/10 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-[3px] group-hover:-translate-y-[2px] group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:transform-none"
+                            className="grid h-9 w-9 place-items-center rounded-full bg-ink/[0.07] transition-[transform,background-color] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-[3px] group-hover:-translate-y-[2px] group-hover:scale-105 group-hover:bg-white/15 motion-reduce:transition-none motion-reduce:group-hover:transform-none"
                           >
                             <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
                               <path
@@ -492,7 +647,7 @@ export default function Contact() {
                           {sending ? 'Sending…' : 'Send the enquiry'}
                           <span
                             aria-hidden="true"
-                            className="grid h-9 w-9 place-items-center rounded-full bg-white/10 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-[3px] group-hover:-translate-y-[2px] group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:transform-none"
+                            className="grid h-9 w-9 place-items-center rounded-full bg-ink/[0.07] transition-[transform,background-color] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-[3px] group-hover:-translate-y-[2px] group-hover:scale-105 group-hover:bg-white/15 motion-reduce:transition-none motion-reduce:group-hover:transform-none"
                           >
                             {sending ? (
                               <svg
@@ -599,153 +754,233 @@ export default function Contact() {
         </div>
       </section>
 
+      {/* The depot, as one instrument rather than three centred things.
+          Before: a centred kicker and headline, a map bled off the right edge on
+          a different axis to everything above it, and a centred button floating
+          underneath — nothing shared a left edge, and the map carried the whole
+          claim on its own. A map is not evidence of stock; the address, the
+          hours you can collect in, and a number to ring before you drive are.
+          So the map keeps its half and the other half states the depot, welded
+          into a single plate with no gap between them. */}
       <section
         aria-labelledby="place-heading"
         className="relative isolate overflow-clip bg-white pt-12 pb-24 sm:pt-14 sm:pb-28 lg:pt-16 lg:pb-32"
       >
-
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 -z-10 [background-image:linear-gradient(to_right,rgba(20,23,28,0.055)_1px,transparent_1px),linear-gradient(to_bottom,rgba(20,23,28,0.055)_1px,transparent_1px)] [background-size:5.5rem_5.5rem] [mask-image:radial-gradient(50%_26%_at_6%_8%,black,transparent_72%)]"
         />
 
         <div className="mx-auto w-full max-w-[84rem] px-5 sm:px-10">
-          <Rise className="text-center">
-
-            <p className="flex items-center justify-center gap-3 font-mono text-[0.8125rem] tracking-[0.2em] text-ink uppercase">
+          {/* Same rail every other section on the site opens with, so this one
+              hangs off the page's left edge instead of its centre line. */}
+          <div className="flex items-end justify-between gap-6 pb-4 font-mono text-[0.8125rem] tracking-[0.2em] text-muted uppercase">
+            <span className="flex items-center gap-3 text-ink">
               <span aria-hidden="true" className="flex shrink-0 flex-col gap-[2px]">
                 <span className="block h-[2px] w-3 bg-brand-600" />
                 <span className="block h-[2px] w-1.5 bg-brand-600/40" />
               </span>
               Warehouse
-            </p>
+            </span>
+            <span className="hidden tabular-nums sm:block">{MAP_COORDS}</span>
+          </div>
+          <div aria-hidden="true" className="h-px w-full bg-ink/15" />
 
+          <Rise className="mt-12 sm:mt-14">
             <h2
               id="place-heading"
-              className="mx-auto mt-6 max-w-[22ch] font-sans text-[2.25rem] leading-[1.02] font-extrabold tracking-[-0.025em] text-balance text-ink sm:text-[2.75rem] lg:text-[3rem]"
+              className="mx-auto text-center font-sans text-[clamp(1.75rem,3.6vw,3rem)] leading-[1.06] font-extrabold tracking-[-0.03em] text-balance text-ink"
             >
               The stock is in this city,{' '}
               <span className="text-brand-600">not on a ship.</span>
             </h2>
           </Rise>
 
-          <Rise delay={140} className="mt-14 lg:-mr-10 xl:-mr-20">
-
-            <div className="flex items-center justify-between gap-4 border-t border-ink/15 pt-4 pb-4">
-              <p className="flex items-center gap-2.5 font-mono text-[0.625rem] tracking-[0.22em] text-ink uppercase">
-                <span aria-hidden="true" className="block h-[2px] w-3 shrink-0 bg-brand-600" />
-                {siteConfig.mapPlace}
-              </p>
-              <div className="flex items-center gap-6">
-                <p className="hidden font-mono text-[0.625rem] tracking-[0.22em] text-ink/40 uppercase sm:block">
-                  {MAP_COORDS}
+          {/* One plate, two halves, no gutter between them: the depot's facts and
+              the ground they sit on are the same object. */}
+          <Rise delay={140} className="mt-12 sm:mt-16">
+            {/* The panel is a fixed plate and the map takes the rest: a 12-column
+                split gave the facts 44% of the width at 1440 and left the map
+                looking like the smaller half of an argument it is supposed to be
+                the evidence for. */}
+            <div className="grid overflow-hidden bg-white shadow-[0_1px_2px_rgba(20,23,28,0.05),0_44px_86px_-54px_rgba(20,23,28,0.6)] ring-1 ring-ink/[0.09] ring-inset lg:grid-cols-[minmax(0,25rem)_minmax(0,1fr)]">
+              {/* Ink half. The site is white nearly everywhere, which is what
+                  makes one dark plate at the foot of the page read as the floor
+                  rather than as decoration — and it is what stops the map's own
+                  greys from being the darkest thing here. */}
+              <div className="field-grain-on-black relative flex flex-col bg-ink p-7 text-white sm:p-9 lg:p-10">
+                <p className="flex items-center gap-2.5 font-mono text-[0.625rem] tracking-[0.22em] text-white/55 uppercase">
+                  <span aria-hidden="true" className="block h-[2px] w-3 shrink-0 bg-brand-600" />
+                  Collection point
                 </p>
+
+                <p className="mt-6 font-sans text-[1.375rem] leading-[1.15] font-bold tracking-[-0.02em] text-balance sm:text-[1.5rem]">
+                  {siteConfig.mapPlace}
+                </p>
+                <p className="mt-2 text-[0.9375rem] leading-relaxed text-white/55">
+                  {siteConfig.address}
+                </p>
+
+                {/* Coordinates rather than a street line because that is what
+                    the address field actually resolves to — and they are what
+                    you hand a driver. */}
+                <dl className="mt-8 border-t border-white/[0.14]">
+                  {[
+                    { term: 'Open', value: siteConfig.hours },
+                    { term: 'Call ahead', value: siteConfig.phone, href: tel },
+                    { term: 'Coordinates', value: MAP_COORDS, mono: true },
+                  ].map(({ term, value, href, mono }) => (
+                    <div
+                      key={term}
+                      className="flex items-baseline justify-between gap-5 border-b border-white/[0.14] py-3.5"
+                    >
+                      <dt className="shrink-0 font-mono text-[0.625rem] tracking-[0.22em] text-white/45 uppercase">
+                        {term}
+                      </dt>
+                      <dd
+                        className={cn(
+                          'text-right text-[0.9375rem] leading-snug text-white',
+                          mono && 'font-mono text-[0.8125rem] tracking-[0.06em] tabular-nums',
+                        )}
+                      >
+                        {href ? (
+                          <a
+                            href={href}
+                            className="tabular-nums whitespace-nowrap underline decoration-white/25 decoration-1 underline-offset-4 transition-colors duration-300 hover:text-brand-400 hover:decoration-brand-400"
+                          >
+                            {value}
+                          </a>
+                        ) : (
+                          value
+                        )}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+
+                {/* mt-auto: on wide screens the panel is stretched to the map's
+                    height, and the action belongs at the foot of it rather than
+                    floating under the last rule. */}
+                <a
+                  href={MAP_DIRECTIONS}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  /* Optical balance beats measured balance here. Centring the
+                     label left 52px of bare white on one side against a filled
+                     disc on the other, and the pill read as half empty. Label
+                     left, arrow right — the same pill every other CTA on the
+                     site uses. */
+                  className="group mt-9 inline-flex w-fit items-center gap-3 self-start rounded-full bg-white py-2 pr-2 pl-6 text-[0.9375rem] font-medium text-ink transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:shadow-[0_18px_36px_-18px_rgba(0,0,0,0.6)] active:scale-[0.98] motion-reduce:transition-none lg:mt-auto"
+                >
+                  Get directions
+                  <span
+                    aria-hidden="true"
+                    className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-ink/[0.07] transition-[transform,background-color,color] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-[3px] group-hover:-translate-y-[2px] group-hover:bg-brand-600 group-hover:text-white motion-reduce:transition-none motion-reduce:group-hover:transform-none"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
+                      <path
+                        d="M6.5 17.5 17.5 6.5M9 6.5h8.5V15"
+                        stroke="currentColor"
+                        strokeWidth="1.25"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                </a>
+              </div>
+
+              {/* Ground half. Ordered first on a phone — the map is what tells
+                  you where this is; the panel is what you read once you know. */}
+              <div className="relative isolate order-first h-[19rem] bg-ink/5 sm:h-[24rem] lg:order-none lg:h-[32rem]">
+                {/* Google's own map is the noisiest thing we put on this site:
+                    orange restaurant pins, blue shop icons, park green, four
+                    scripts of label. Held to grey it becomes what we actually
+                    want from it — the shape of the streets around the yard — and
+                    it hands the only colour in the frame back to the reticle.
+                    Colour returns the moment you ask for the live map, which is
+                    what makes that state change visible rather than notional. */}
+                <iframe
+                  src={MAP_EMBED}
+                  title={`Map showing ${siteConfig.name} at the ${siteConfig.mapPlace}, ${siteConfig.address}`}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className={cn(
+                    'absolute inset-0 h-full w-full border-0 transition-[filter] duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none',
+                    mapLive
+                      ? '[filter:saturate(0.95)]'
+                      : '[filter:grayscale(1)_contrast(1.06)_brightness(1.04)]',
+                  )}
+                />
+
+                {/* The embed centres on the coordinates, so dead centre is the
+                    yard — which lets us annotate it rather than mark it twice.
+                    A ring around Google's pin, not another pin on top of it. */}
+                <div
+                  aria-hidden="true"
+                  style={{ opacity: mapLive ? 0 : 1 }}
+                  /* Nudged up 0.9rem off dead centre: the embed's pin is anchored
+                     by its point, so its body sits above the coordinate. Centred
+                     on the coordinate, the ring looked like it had slipped down
+                     the pin — centred on the pin, it reads as aimed at it. */
+                  className="pointer-events-none absolute inset-0 z-20 -translate-y-[0.9rem] transition-opacity duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none"
+                >
+                  <span className="absolute top-1/2 left-1/2 block h-[7rem] w-[7rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-600/[0.07] ring-[1.5px] ring-brand-600/45" />
+                  <span className="absolute top-1/2 left-1/2 block h-[1.25rem] w-px -translate-x-1/2 -translate-y-[4.75rem] bg-brand-600/45" />
+                  <span className="absolute top-1/2 left-1/2 block h-[1.25rem] w-px -translate-x-1/2 translate-y-[3.5rem] bg-brand-600/45" />
+                  <span className="absolute top-1/2 left-1/2 block h-px w-[1.25rem] -translate-x-[4.75rem] -translate-y-1/2 bg-brand-600/45" />
+                  <span className="absolute top-1/2 left-1/2 block h-px w-[1.25rem] translate-x-[3.5rem] -translate-y-1/2 bg-brand-600/45" />
+                </div>
+
+                {/* Survey brackets, plus a vignette so the map's own greys settle
+                    into the plate instead of stopping at a hard edge. */}
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 z-20 shadow-[inset_0_0_70px_rgba(20,23,28,0.07)]"
+                >
+                  <span className="absolute top-4 left-4 h-5 w-5 border-t border-l border-ink/30" />
+                  <span className="absolute top-4 right-4 h-5 w-5 border-t border-r border-ink/30" />
+                  <span className="absolute bottom-4 left-4 h-5 w-5 border-b border-l border-ink/30" />
+                  <span className="absolute right-4 bottom-4 h-5 w-5 border-r border-b border-ink/30" />
+                </div>
+
+                {/* One control, not two: the state readout is the affordance, and
+                    the whole frame is the hit area behind it. The pill used to
+                    sit bottom-left, on top of Google's satellite thumbnail. */}
                 <p
                   aria-hidden="true"
-                  className="flex items-center gap-2 font-mono text-[0.625rem] tracking-[0.22em] text-ink/40 uppercase"
+                  className="pointer-events-none absolute top-4 right-4 z-30 flex items-center gap-2.5 rounded-full bg-white/90 px-3.5 py-2 font-mono text-[0.625rem] tracking-[0.22em] text-ink/70 uppercase ring-1 ring-ink/10 backdrop-blur-[2px]"
                 >
                   <span
                     className={cn(
                       'block h-1.5 w-1.5 rounded-full transition-colors duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]',
-                      mapLive ? 'bg-brand-600' : 'bg-ink/20',
+                      mapLive ? 'bg-brand-600' : 'bg-ink/25',
                     )}
                   />
-                  {mapLive ? 'Live' : 'Static'}
+                  {mapLive ? 'Live' : 'Static · tap for live map'}
                 </p>
-              </div>
-            </div>
 
-            <div className="relative isolate h-[22rem] overflow-hidden bg-ink/5 shadow-[0_1px_2px_rgba(20,23,28,0.05),0_40px_80px_-52px_rgba(20,23,28,0.55)] ring-1 ring-ink/[0.09] ring-inset sm:h-[24rem] lg:h-[27rem]">
-              <iframe
-                src={MAP_EMBED}
-                title={`Map showing ${siteConfig.name} at the ${siteConfig.mapPlace}, ${siteConfig.address}`}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="absolute inset-0 h-full w-full border-0 saturate-[0.94]"
-              />
-
-              <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-20">
-                <span className="absolute top-4 left-4 h-5 w-5 border-t border-l border-ink/25" />
-                <span className="absolute bottom-4 left-4 h-5 w-5 border-b border-l border-ink/25" />
-              </div>
-
-              {!mapLive && (
-                <button
-                  type="button"
-                  onClick={() => setMapLive(true)}
-                  className="group absolute inset-0 z-10 flex cursor-pointer items-start justify-start p-4 pl-12 sm:p-5 sm:pl-14"
-                >
-                  <span className="sr-only">Enable map panning and zooming</span>
-                  <span
-                    aria-hidden="true"
-                    className="absolute inset-0 bg-ink/[0.07] transition-opacity duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:opacity-0 motion-reduce:transition-none"
-                  />
-                  <span
-                    aria-hidden="true"
-                    className="relative flex items-center gap-2.5 rounded-full bg-white/92 px-4 py-2 font-mono text-[0.625rem] tracking-[0.22em] text-ink uppercase ring-1 ring-ink/10 shadow-[0_1px_2px_rgba(20,23,28,0.12),0_14px_30px_-16px_rgba(20,23,28,0.5)] transition-[transform,background-color,box-shadow] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:bg-white group-hover:ring-ink/20 group-active:scale-[0.98] motion-reduce:transition-none"
+                {/* The iframe only takes the pointer once you ask it to, so the
+                    page never traps a scroll on the way past. */}
+                {!mapLive && (
+                  <button
+                    type="button"
+                    onClick={() => setMapLive(true)}
+                    onKeyDown={(e) => e.key === 'Enter' && setMapLive(true)}
+                    className="group absolute inset-0 z-20 cursor-pointer"
                   >
-                    <span className="block h-1.5 w-1.5 rounded-full bg-brand-600" />
-                    Tap to move the map
-                  </span>
-                </button>
-              )}
+                    <span className="sr-only">
+                      Switch to the live map — enables panning, zooming and full
+                      colour
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className="absolute inset-0 bg-white/25 transition-opacity duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:opacity-0 motion-reduce:transition-none"
+                    />
+                  </button>
+                )}
+              </div>
             </div>
-          </Rise>
-
-          <Rise delay={160} className="text-center">
-            <a
-              href={MAP_DIRECTIONS}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="group mt-9 inline-flex items-center gap-3 rounded-full bg-ink py-2 pr-2 pl-6 text-[0.9375rem] font-medium text-white shadow-[0_1px_2px_rgba(20,23,28,0.08),0_14px_30px_-18px_rgba(20,23,28,0.5)] transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:shadow-[0_1px_2px_rgba(20,23,28,0.1),0_22px_40px_-18px_rgba(20,23,28,0.55)] active:scale-[0.98] motion-reduce:transition-none"
-            >
-              Get directions
-              <span
-                aria-hidden="true"
-                className="grid h-9 w-9 place-items-center rounded-full bg-white/10 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-[3px] group-hover:-translate-y-[2px] group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:transform-none"
-              >
-                <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
-                  <path
-                    d="M6.5 17.5 17.5 6.5M9 6.5h8.5V15"
-                    stroke="currentColor"
-                    strokeWidth="1.25"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
-            </a>
-          </Rise>
-
-          <Rise delay={180}>
-            <dl className="mt-10 divide-y divide-ink/10 border-t border-ink/15 sm:grid sm:grid-cols-3 sm:divide-y-0">
-              {[
-                { term: 'Address', value: siteConfig.address },
-                { term: 'Open', value: siteConfig.hours },
-                { term: 'Desk', value: siteConfig.phone, href: tel },
-              ].map(({ term, value, href }, i) => (
-                <div
-                  key={term}
-                  className={cn('py-6', i > 0 && 'sm:border-l sm:border-ink/12 sm:pl-8')}
-                >
-                  <dt className="font-mono text-[0.625rem] tracking-[0.22em] text-brand-600 uppercase">
-                    {term}
-                  </dt>
-                  <dd className="mt-3 text-[1.0625rem] leading-snug text-pretty text-ink">
-                    {href ? (
-                      <a
-                        href={href}
-                        className="underline decoration-ink/20 decoration-1 underline-offset-4 transition-colors duration-300 hover:text-brand-600 hover:decoration-brand-600"
-                      >
-                        {value}
-                      </a>
-                    ) : (
-                      value
-                    )}
-                  </dd>
-                </div>
-              ))}
-            </dl>
           </Rise>
         </div>
       </section>

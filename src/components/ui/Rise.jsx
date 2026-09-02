@@ -28,7 +28,10 @@ export default function Rise({
     const offset = FROM[from] ?? FROM.below
 
     const ctx = gsap.context(() => {
-      gsap.set(el, { opacity: 0, ...offset })
+      // Rise usually wraps a whole column, so the tween fades a large subtree.
+      // Without the hint the compositor re-rasterises that group every frame;
+      // clearProps drops it again once the reveal is done.
+      gsap.set(el, { opacity: 0, willChange: 'transform, opacity', ...offset })
     }, el)
 
     let stop = null
@@ -41,7 +44,7 @@ export default function Rise({
             x: 0,
             y: 0,
             delay: delay / 1000,
-            clearProps: 'opacity,transform',
+            clearProps: 'opacity,transform,willChange',
           })
         })
       })
