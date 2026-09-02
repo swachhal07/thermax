@@ -4,7 +4,10 @@ import Rise from '@/components/ui/Rise'
 import { cn } from '@/lib/utils'
 
 import plateLab from '@/assets/about-plate-lab.webp'
-import plateSite from '@/assets/images/about-site.webp'
+/* The cast test cylinder under callipers. It pairs with the wet-chemistry plate
+   beside it as the two halves of the same job — the formulation and the proof
+   that the mix made strength — rather than as chemistry against a site. */
+import plateSite from '@/assets/images/concrete_testing_2024_blog2.webp'
 
 const TABS = [
   {
@@ -242,11 +245,11 @@ export default function AboutIntro() {
               <div className="relative col-span-3 h-40 overflow-hidden bg-ink/5 sm:h-56 lg:h-full">
                 <img
                   src={plateSite}
-                  width={1100}
-                  height={728}
+                  width={1082}
+                  height={822}
                   decoding="async"
                   loading="lazy"
-                  alt="Reinforcement bar and steel formwork laid out on a concrete deck, two workers in high-visibility jackets cutting and tying steel"
+                  alt="A gloved technician measuring a cast concrete test cylinder with callipers beside a compression testing machine"
                   className="h-full w-full object-cover"
                 />
                 <div

@@ -2,20 +2,12 @@ import { Link } from 'react-router-dom'
 import Rise from '@/components/ui/Rise'
 import { cn } from '@/lib/utils'
 import { services } from '@/data/services'
+import { plateFor } from '@/data/plates'
 
-const PHOTOS = import.meta.glob('../../assets/images/service-*.{jpg,jpeg,png,webp}', {
-  eager: true,
-  import: 'default',
-})
-
-const bySlug = Object.fromEntries(
-  Object.entries(PHOTOS).map(([path, src]) => [
-    path.replace(/^.*\/service-/, '').replace(/\.\w+$/, ''),
-    src,
-  ]),
-)
-
-const photoFor = (slug) => bySlug[slug] ?? null
+// Same photographs as the hero at the top of this page, not a second set: each
+// card carries the still of the plate the hero opens that sector with. It also
+// costs nothing — the hero has already fetched these, so the cards draw from
+// cache rather than pulling a parallel `service-*` set down the wire.
 
 const LAYOUT = [
   { span: 'lg:col-span-7', wide: true },
@@ -63,7 +55,7 @@ export default function ServicesGrid() {
 
         <ul className="grid list-none grid-cols-1 gap-5 p-0 sm:grid-cols-2 sm:gap-6 lg:grid-cols-12">
           {services.map((service, i) => {
-            const photo = photoFor(service.slug)
+            const photo = plateFor(service.slug)
             const { span, wide } = LAYOUT[i % LAYOUT.length]
 
             return (
@@ -80,11 +72,17 @@ export default function ServicesGrid() {
 
                   <div className="relative aspect-[16/11] w-full overflow-hidden rounded-xl ring-1 ring-inset ring-white/10 sm:aspect-[16/10] lg:aspect-auto lg:h-[clamp(21rem,30vw,27rem)]">
                     {photo ? (
+                      // alt="" deliberately. `service.imageAlt` describes the
+                      // old service-* photograph, not the plate now shown here,
+                      // and a wrong description is worse than none. Nothing is
+                      // lost: the card states its sector and what we supply into
+                      // it in text directly over the image, and that heading is
+                      // the link's accessible name.
                       <img
                         src={photo}
                         loading="lazy"
                         decoding="async"
-                        alt={service.imageAlt}
+                        alt=""
                         style={{ objectPosition: service.focus }}
                         className="absolute inset-0 h-full w-full object-cover"
                       />

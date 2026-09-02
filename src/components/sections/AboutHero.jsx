@@ -4,7 +4,12 @@ import { gsap, prefersReducedMotion } from '@/lib/gsap'
 import { services } from '@/data/services'
 import { cn } from '@/lib/utils'
 import { siteConfig } from '@/lib/siteConfig'
-import platePeople from '@/assets/images/Kaligandaki_Hydro.jpg'
+/* Resized from DJI_0341.jpg, 5464×3640 and 16.8MB straight off the drone, to
+   1920w webp at 480KB. This is the about page's LCP image — the original would
+   have been roughly thirty-five times the weight of every other asset on the
+   page put together. The drone originals stay in the folder as masters; none of
+   them should ever be imported directly. */
+import plateHeadworks from '@/assets/images/about-hydro-aerial.webp'
 
 const FACTS = [
   { term: 'Made by', value: 'Thermax' },
@@ -136,12 +141,12 @@ export default function AboutHero() {
                 className="relative h-[19rem] will-change-transform sm:h-[26rem] lg:absolute lg:inset-0 lg:h-full"
               >
                 <img
-                  src={platePeople}
-                  width={2048}
-                  height={1536}
+                  src={plateHeadworks}
+                  width={1920}
+                  height={1279}
                   fetchPriority="high"
                   decoding="async"
-                  alt="The Kali Gandaki hydropower dam in Nepal, its spillway gates holding back a turquoise reservoir in a steep river gorge"
+                  alt="A hydropower headworks from the air: a weir spilling into a Himalayan river beside twin desilting basins and their gates, cut into a forested gorge"
                   className="absolute inset-0 h-[112%] w-full object-cover object-[50%_50%]"
                 />
               </div>

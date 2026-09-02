@@ -4,7 +4,11 @@ import { gsap, prefersReducedMotion } from '@/lib/gsap'
 import { siteConfig } from '@/lib/siteConfig'
 import { services } from '@/data/services'
 import { cn } from '@/lib/utils'
-import siteWork from '@/assets/images/about-site.webp'
+/* A test cylinder under callipers rather than another site photograph: the
+   column beside it promises a product, a dosage and the data sheet the
+   recommendation rests on, and this is where that comes from. It is also the
+   only picture on the site that shows the desk instead of the ground. */
+import labTest from '@/assets/images/concrete_testing_2024_blog2.webp'
 import pourImage from '@/assets/images/Pouring_concrete-e1745414985283.webp'
 
 const LINE_LABELS = {
@@ -37,7 +41,6 @@ const ASSURANCES = [
 
 const EMPTY = { name: '', company: '', email: '', phone: '', lines: [], message: '' }
 
-const MAP_EMBED = `https://www.google.com/maps?q=${encodeURIComponent(siteConfig.mapQuery)}&z=17&output=embed`
 const MAP_DIRECTIONS = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(siteConfig.mapQuery)}`
 
 const MAP_COORDS = (() => {
@@ -134,7 +137,6 @@ export default function Contact() {
   const [form, setForm] = useState(EMPTY)
   const [errors, setErrors] = useState({})
   const [status, setStatus] = useState('idle')
-  const [mapLive, setMapLive] = useState(false)
   const fields = useRef({})
 
   const set = (name) => (e) => {
@@ -334,18 +336,36 @@ export default function Contact() {
               <dt className="font-mono text-[0.6875rem] uppercase tracking-[0.22em] text-muted">
                 Phone
               </dt>
-              <dd className="mt-2.5 flex flex-wrap items-baseline gap-x-6 gap-y-1">
+              {/* Nepal first, India second, separated by a comma rather than by
+                  a gap: this is a Kathmandu supplier, so the local line is the
+                  one to try first, and two numbers set apart by whitespace read
+                  as two separate facts rather than one list. Inline text, not a
+                  flex row, so the comma stays welded to the number in front of
+                  it and the pair wraps as a sentence would. */}
+              <dd className="mt-2.5 text-[1.1875rem] leading-snug text-ink">
                 {[
-                  { number: siteConfig.phone, href: tel },
                   { number: siteConfig.phoneAlt, href: telAlt },
-                ].map(({ number, href }) => (
-                  <a
-                    key={number}
-                    href={href}
-                    className="w-fit whitespace-nowrap text-[1.1875rem] leading-snug tabular-nums text-ink transition-colors duration-300 hover:text-brand-600"
-                  >
-                    {number}
-                  </a>
+                  { number: siteConfig.phone, href: tel },
+                ].map(({ number, href }, i) => (
+                  <span key={number}>
+                    {/* Equal air either side, so the comma reads as sitting
+                        between the two numbers rather than hanging off the first.
+                        The margins carry the spacing instead of a literal space,
+                        and a zero-width space keeps a line break possible on a
+                        narrow phone. */}
+                    {i > 0 && (
+                      <>
+                        <span className="mx-[0.3em] text-ink/40">,</span>
+                        {'​'}
+                      </>
+                    )}
+                    <a
+                      href={href}
+                      className="whitespace-nowrap tabular-nums transition-colors duration-300 hover:text-brand-600"
+                    >
+                      {number}
+                    </a>
+                  </span>
                 ))}
               </dd>
             </div>
@@ -366,7 +386,7 @@ export default function Contact() {
 
             <div className="pt-7 lg:border-l lg:border-ink/12 lg:pl-8">
               <dt className="font-mono text-[0.6875rem] uppercase tracking-[0.22em] text-muted">
-                Warehouse
+                Head Office
               </dt>
               <dd className="mt-2.5">
                 <a
@@ -717,13 +737,13 @@ export default function Contact() {
 
             <Rise from="right" delay={140} className="lg:sticky lg:top-32 lg:self-start">
               <img
-                src={siteWork}
-                width={1100}
-                height={728}
+                src={labTest}
+                width={1082}
+                height={822}
                 loading="lazy"
                 decoding="async"
-                alt="Two steel fixers in orange vests kneeling over a rebar mat on a fresh slab, cutting gear and coiled hose around them"
-                className="h-56 w-full bg-ink/5 object-cover object-[50%_45%] sm:h-72 lg:h-64"
+                alt="A gloved technician measuring a cast concrete test cylinder with callipers beside a compression testing machine"
+                className="h-56 w-full bg-ink/5 object-cover object-[55%_50%] sm:h-72 lg:h-64"
               />
 
               <dl className="mt-9 border-t border-ink/15">
@@ -751,237 +771,6 @@ export default function Contact() {
               </p>
             </Rise>
           </div>
-        </div>
-      </section>
-
-      {/* The depot, as one instrument rather than three centred things.
-          Before: a centred kicker and headline, a map bled off the right edge on
-          a different axis to everything above it, and a centred button floating
-          underneath — nothing shared a left edge, and the map carried the whole
-          claim on its own. A map is not evidence of stock; the address, the
-          hours you can collect in, and a number to ring before you drive are.
-          So the map keeps its half and the other half states the depot, welded
-          into a single plate with no gap between them. */}
-      <section
-        aria-labelledby="place-heading"
-        className="relative isolate overflow-clip bg-white pt-12 pb-24 sm:pt-14 sm:pb-28 lg:pt-16 lg:pb-32"
-      >
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 -z-10 [background-image:linear-gradient(to_right,rgba(20,23,28,0.055)_1px,transparent_1px),linear-gradient(to_bottom,rgba(20,23,28,0.055)_1px,transparent_1px)] [background-size:5.5rem_5.5rem] [mask-image:radial-gradient(50%_26%_at_6%_8%,black,transparent_72%)]"
-        />
-
-        <div className="mx-auto w-full max-w-[84rem] px-5 sm:px-10">
-          {/* Same rail every other section on the site opens with, so this one
-              hangs off the page's left edge instead of its centre line. */}
-          <div className="flex items-end justify-between gap-6 pb-4 font-mono text-[0.8125rem] tracking-[0.2em] text-muted uppercase">
-            <span className="flex items-center gap-3 text-ink">
-              <span aria-hidden="true" className="flex shrink-0 flex-col gap-[2px]">
-                <span className="block h-[2px] w-3 bg-brand-600" />
-                <span className="block h-[2px] w-1.5 bg-brand-600/40" />
-              </span>
-              Warehouse
-            </span>
-            <span className="hidden tabular-nums sm:block">{MAP_COORDS}</span>
-          </div>
-          <div aria-hidden="true" className="h-px w-full bg-ink/15" />
-
-          <Rise className="mt-12 sm:mt-14">
-            <h2
-              id="place-heading"
-              className="mx-auto text-center font-sans text-[clamp(1.75rem,3.6vw,3rem)] leading-[1.06] font-extrabold tracking-[-0.03em] text-balance text-ink"
-            >
-              The stock is in this city,{' '}
-              <span className="text-brand-600">not on a ship.</span>
-            </h2>
-          </Rise>
-
-          {/* One plate, two halves, no gutter between them: the depot's facts and
-              the ground they sit on are the same object. */}
-          <Rise delay={140} className="mt-12 sm:mt-16">
-            {/* The panel is a fixed plate and the map takes the rest: a 12-column
-                split gave the facts 44% of the width at 1440 and left the map
-                looking like the smaller half of an argument it is supposed to be
-                the evidence for. */}
-            <div className="grid overflow-hidden bg-white shadow-[0_1px_2px_rgba(20,23,28,0.05),0_44px_86px_-54px_rgba(20,23,28,0.6)] ring-1 ring-ink/[0.09] ring-inset lg:grid-cols-[minmax(0,25rem)_minmax(0,1fr)]">
-              {/* Ink half. The site is white nearly everywhere, which is what
-                  makes one dark plate at the foot of the page read as the floor
-                  rather than as decoration — and it is what stops the map's own
-                  greys from being the darkest thing here. */}
-              <div className="field-grain-on-black relative flex flex-col bg-ink p-7 text-white sm:p-9 lg:p-10">
-                <p className="flex items-center gap-2.5 font-mono text-[0.625rem] tracking-[0.22em] text-white/55 uppercase">
-                  <span aria-hidden="true" className="block h-[2px] w-3 shrink-0 bg-brand-600" />
-                  Collection point
-                </p>
-
-                <p className="mt-6 font-sans text-[1.375rem] leading-[1.15] font-bold tracking-[-0.02em] text-balance sm:text-[1.5rem]">
-                  {siteConfig.mapPlace}
-                </p>
-                <p className="mt-2 text-[0.9375rem] leading-relaxed text-white/55">
-                  {siteConfig.address}
-                </p>
-
-                {/* Coordinates rather than a street line because that is what
-                    the address field actually resolves to — and they are what
-                    you hand a driver. */}
-                <dl className="mt-8 border-t border-white/[0.14]">
-                  {[
-                    { term: 'Open', value: siteConfig.hours },
-                    { term: 'Call ahead', value: siteConfig.phone, href: tel },
-                    { term: 'Coordinates', value: MAP_COORDS, mono: true },
-                  ].map(({ term, value, href, mono }) => (
-                    <div
-                      key={term}
-                      className="flex items-baseline justify-between gap-5 border-b border-white/[0.14] py-3.5"
-                    >
-                      <dt className="shrink-0 font-mono text-[0.625rem] tracking-[0.22em] text-white/45 uppercase">
-                        {term}
-                      </dt>
-                      <dd
-                        className={cn(
-                          'text-right text-[0.9375rem] leading-snug text-white',
-                          mono && 'font-mono text-[0.8125rem] tracking-[0.06em] tabular-nums',
-                        )}
-                      >
-                        {href ? (
-                          <a
-                            href={href}
-                            className="tabular-nums whitespace-nowrap underline decoration-white/25 decoration-1 underline-offset-4 transition-colors duration-300 hover:text-brand-400 hover:decoration-brand-400"
-                          >
-                            {value}
-                          </a>
-                        ) : (
-                          value
-                        )}
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
-
-                {/* mt-auto: on wide screens the panel is stretched to the map's
-                    height, and the action belongs at the foot of it rather than
-                    floating under the last rule. */}
-                <a
-                  href={MAP_DIRECTIONS}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  /* Optical balance beats measured balance here. Centring the
-                     label left 52px of bare white on one side against a filled
-                     disc on the other, and the pill read as half empty. Label
-                     left, arrow right — the same pill every other CTA on the
-                     site uses. */
-                  className="group mt-9 inline-flex w-fit items-center gap-3 self-start rounded-full bg-white py-2 pr-2 pl-6 text-[0.9375rem] font-medium text-ink transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:shadow-[0_18px_36px_-18px_rgba(0,0,0,0.6)] active:scale-[0.98] motion-reduce:transition-none lg:mt-auto"
-                >
-                  Get directions
-                  <span
-                    aria-hidden="true"
-                    className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-ink/[0.07] transition-[transform,background-color,color] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-[3px] group-hover:-translate-y-[2px] group-hover:bg-brand-600 group-hover:text-white motion-reduce:transition-none motion-reduce:group-hover:transform-none"
-                  >
-                    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
-                      <path
-                        d="M6.5 17.5 17.5 6.5M9 6.5h8.5V15"
-                        stroke="currentColor"
-                        strokeWidth="1.25"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-                </a>
-              </div>
-
-              {/* Ground half. Ordered first on a phone — the map is what tells
-                  you where this is; the panel is what you read once you know. */}
-              <div className="relative isolate order-first h-[19rem] bg-ink/5 sm:h-[24rem] lg:order-none lg:h-[32rem]">
-                {/* Google's own map is the noisiest thing we put on this site:
-                    orange restaurant pins, blue shop icons, park green, four
-                    scripts of label. Held to grey it becomes what we actually
-                    want from it — the shape of the streets around the yard — and
-                    it hands the only colour in the frame back to the reticle.
-                    Colour returns the moment you ask for the live map, which is
-                    what makes that state change visible rather than notional. */}
-                <iframe
-                  src={MAP_EMBED}
-                  title={`Map showing ${siteConfig.name} at the ${siteConfig.mapPlace}, ${siteConfig.address}`}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  className={cn(
-                    'absolute inset-0 h-full w-full border-0 transition-[filter] duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none',
-                    mapLive
-                      ? '[filter:saturate(0.95)]'
-                      : '[filter:grayscale(1)_contrast(1.06)_brightness(1.04)]',
-                  )}
-                />
-
-                {/* The embed centres on the coordinates, so dead centre is the
-                    yard — which lets us annotate it rather than mark it twice.
-                    A ring around Google's pin, not another pin on top of it. */}
-                <div
-                  aria-hidden="true"
-                  style={{ opacity: mapLive ? 0 : 1 }}
-                  /* Nudged up 0.9rem off dead centre: the embed's pin is anchored
-                     by its point, so its body sits above the coordinate. Centred
-                     on the coordinate, the ring looked like it had slipped down
-                     the pin — centred on the pin, it reads as aimed at it. */
-                  className="pointer-events-none absolute inset-0 z-20 -translate-y-[0.9rem] transition-opacity duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none"
-                >
-                  <span className="absolute top-1/2 left-1/2 block h-[7rem] w-[7rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-600/[0.07] ring-[1.5px] ring-brand-600/45" />
-                  <span className="absolute top-1/2 left-1/2 block h-[1.25rem] w-px -translate-x-1/2 -translate-y-[4.75rem] bg-brand-600/45" />
-                  <span className="absolute top-1/2 left-1/2 block h-[1.25rem] w-px -translate-x-1/2 translate-y-[3.5rem] bg-brand-600/45" />
-                  <span className="absolute top-1/2 left-1/2 block h-px w-[1.25rem] -translate-x-[4.75rem] -translate-y-1/2 bg-brand-600/45" />
-                  <span className="absolute top-1/2 left-1/2 block h-px w-[1.25rem] translate-x-[3.5rem] -translate-y-1/2 bg-brand-600/45" />
-                </div>
-
-                {/* Survey brackets, plus a vignette so the map's own greys settle
-                    into the plate instead of stopping at a hard edge. */}
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 z-20 shadow-[inset_0_0_70px_rgba(20,23,28,0.07)]"
-                >
-                  <span className="absolute top-4 left-4 h-5 w-5 border-t border-l border-ink/30" />
-                  <span className="absolute top-4 right-4 h-5 w-5 border-t border-r border-ink/30" />
-                  <span className="absolute bottom-4 left-4 h-5 w-5 border-b border-l border-ink/30" />
-                  <span className="absolute right-4 bottom-4 h-5 w-5 border-r border-b border-ink/30" />
-                </div>
-
-                {/* One control, not two: the state readout is the affordance, and
-                    the whole frame is the hit area behind it. The pill used to
-                    sit bottom-left, on top of Google's satellite thumbnail. */}
-                <p
-                  aria-hidden="true"
-                  className="pointer-events-none absolute top-4 right-4 z-30 flex items-center gap-2.5 rounded-full bg-white/90 px-3.5 py-2 font-mono text-[0.625rem] tracking-[0.22em] text-ink/70 uppercase ring-1 ring-ink/10 backdrop-blur-[2px]"
-                >
-                  <span
-                    className={cn(
-                      'block h-1.5 w-1.5 rounded-full transition-colors duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]',
-                      mapLive ? 'bg-brand-600' : 'bg-ink/25',
-                    )}
-                  />
-                  {mapLive ? 'Live' : 'Static · tap for live map'}
-                </p>
-
-                {/* The iframe only takes the pointer once you ask it to, so the
-                    page never traps a scroll on the way past. */}
-                {!mapLive && (
-                  <button
-                    type="button"
-                    onClick={() => setMapLive(true)}
-                    onKeyDown={(e) => e.key === 'Enter' && setMapLive(true)}
-                    className="group absolute inset-0 z-20 cursor-pointer"
-                  >
-                    <span className="sr-only">
-                      Switch to the live map — enables panning, zooming and full
-                      colour
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      className="absolute inset-0 bg-white/25 transition-opacity duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:opacity-0 motion-reduce:transition-none"
-                    />
-                  </button>
-                )}
-              </div>
-            </div>
-          </Rise>
         </div>
       </section>
     </>

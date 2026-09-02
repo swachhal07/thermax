@@ -6,33 +6,12 @@ import { gsap, prefersReducedMotion } from '@/lib/gsap'
 import { siteConfig } from '@/lib/siteConfig'
 import { services } from '@/data/services'
 import { cn } from '@/lib/utils'
-import damsPlateA from '@/assets/images/hero-dam-01.jpg'
-import damsPlateB from '@/assets/images/hero-dam-02.jpg'
-// Both native under 750px wide — the softest plates in the set. Worth replacing
-// if larger originals turn up.
-import bridgesPlateA from '@/assets/images/hero-bridge-01.jpg'
-import bridgesPlateB from '@/assets/images/hero-bridge-02.jpg'
-import roadsPlateA from '@/assets/images/hero-road.webp'
-import roadsPlateB from '@/assets/images/hero-road-02.jpg'
-import tunnelsPlateA from '@/assets/images/hero-tunnel-01.jpg'
-import tunnelsPlateB from '@/assets/images/glo-shotcrete-05.webp'
-import restorationPlateA from '@/assets/images/Linjebygg-surface-treatment-4.jpg'
-// Resized from a 2522×1680 original to match the rest of the set at 1920w. At
-// 4.2MP it was decoding half again as much bitmap as any other plate for pixels
-// no screen ever showed.
-import restorationPlateB from '@/assets/images/hero-restoration-02.webp'
-
 // The backdrop is not decorative: every plate belongs to one of the applications
 // in the index below it, so the photo and the highlighted name always agree. An
 // application may hold several plates — they play through in order before the
-// index moves on to the next name.
-const PLATES = {
-  dams: [damsPlateA, damsPlateB],
-  bridges: [bridgesPlateA, bridgesPlateB],
-  roads: [roadsPlateA, roadsPlateB],
-  tunnels: [tunnelsPlateA, tunnelsPlateB],
-  restoration: [restorationPlateA, restorationPlateB],
-}
+// index moves on to the next name. The list is shared with the sector grid
+// further down the page, so a swap here shows up in both places.
+import { PLATES } from '@/data/plates'
 
 const SLIDES = services.filter((s) => PLATES[s.slug]?.length)
 
@@ -146,12 +125,6 @@ export default function Hero() {
   const [index, setIndex] = useHeroSlides(inView && !resting)
   const lines = headlineLines(siteConfig.heroHeadline)
   const activeSlide = FRAMES[index].slideIndex
-
-  // The meter measures how long a *name* holds the screen, not a single plate —
-  // Dams runs two. Bumping this on every name change remounts the bar so it
-  // restarts cleanly, including on the loop back round to the first.
-  const [run, setRun] = useState(0)
-  useEffect(() => setRun((n) => n + 1), [activeSlide])
 
   // Slot 2 is the plate on its way out — see useMountedFrames.
   const mounted = useMountedFrames(index)
@@ -283,7 +256,12 @@ export default function Hero() {
             {SLIDES.map((slide, i) => {
               const on = i === activeSlide
               return (
-                <li key={slide.slug} className="shrink-0">
+                // Fixed height, items pinned to the bottom: the name grows in
+                // size, so the row's height and every baseline in it have to be
+                // held by something other than the type. Only the width of the
+                // active item changes, which lets the names either side ease
+                // aside as it opens.
+                <li key={slide.slug} className="flex h-[5.25rem] shrink-0 items-end">
                   <Link
                     to={`/services/${slide.slug}`}
                     onMouseEnter={() => setIndex(FIRST_FRAME[i])}
@@ -293,36 +271,30 @@ export default function Hero() {
                     }}
                     onBlur={() => setResting(false)}
                     aria-current={on ? 'true' : undefined}
+                    /* The size change is real font-size, not a transform. A
+                       scaled-up label is a rasterised bitmap stretched 30% —
+                       soft edges on the one word the section wants you to read.
+                       Growing the type keeps every stage crisp, and confining
+                       the reflow to this row is cheap: five inline items, no
+                       height change, nothing above it moves. */
                     className={cn(
-                      'relative block whitespace-nowrap py-5 font-sans text-sm transition-colors duration-700',
+                      'relative block pb-5 leading-none whitespace-nowrap font-sans transition-[font-size,color,letter-spacing] duration-700',
                       EASE,
-                      on ? 'text-white' : 'text-white/45 hover:text-white/80',
+                      on
+                        ? 'text-[1.25rem] font-semibold tracking-[-0.02em] text-white lg:text-[1.5rem]'
+                        : 'text-sm font-normal tracking-normal text-white/45 hover:text-white/85',
                     )}
                   >
-                    <span className="mr-3 font-mono text-[0.625rem] tracking-[0.2em] text-white/30">
+                    <span
+                      className={cn(
+                        'mr-3 font-mono text-[0.625rem] tracking-[0.2em] transition-colors duration-700',
+                        EASE,
+                        on ? 'text-white' : 'text-white/30',
+                      )}
+                    >
                       {slide.code}
                     </span>
                     {slide.title}
-
-                    {/* Dwell meter — remounts on change, so it restarts. */}
-                    <span
-                      aria-hidden="true"
-                      className="absolute inset-x-0 -bottom-px block h-px overflow-hidden"
-                    >
-                      {on && (
-                        <span
-                          key={run}
-                          style={{
-                            animationDuration: `${PLATES[slide.slug].length * SLIDE_MS}ms`,
-                          }}
-                          className={cn(
-                            'animate-rail block h-full origin-left bg-brand-600',
-                            'motion-reduce:animate-none motion-reduce:scale-x-100',
-                            (!inView || resting) && '[animation-play-state:paused]',
-                          )}
-                        />
-                      )}
-                    </span>
                   </Link>
                 </li>
               )

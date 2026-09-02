@@ -85,7 +85,8 @@ export default function Footer() {
 
           <Rise delay={120} className="lg:col-span-4 lg:justify-self-end lg:text-right">
             <div className="grid gap-3">
-              {[siteConfig.phone, siteConfig.phoneAlt].map((number) => (
+              {/* Nepal line first, same order as the contact page. */}
+              {[siteConfig.phoneAlt, siteConfig.phone].map((number) => (
                 <Trail
                   key={number}
                   href={`tel:${number.replace(/\s+/g, '')}`}
