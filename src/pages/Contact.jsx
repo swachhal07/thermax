@@ -41,6 +41,45 @@ const ASSURANCES = [
 
 const EMPTY = { name: '', company: '', email: '', phone: '', lines: [], message: '' }
 
+/* Web3Forms takes the enquiry and mails it to the address the key is registered
+   to. The key is a public identifier by design — it names an inbox, it does not
+   authorise anything, and any client-side integration ships it in the bundle —
+   so it sits in source and the site needs no environment setup to send mail.
+   VITE_WEB3FORMS_ACCESS_KEY overrides it when one deploy should mail somewhere
+   else; Vite inlines that at build time, so changing it needs a rebuild. */
+const WEB3FORMS_ENDPOINT = 'https://api.web3forms.com/submit'
+const ACCESS_KEY =
+  import.meta.env.VITE_WEB3FORMS_ACCESS_KEY ?? '6d299c7c-2d5b-4ba3-b701-9f44dc17dc5e'
+
+/* Web3Forms treats any non-empty field of this name as a bot and drops the
+   submission. We check it ourselves as well, so an obvious bot costs no
+   request at all. */
+const HONEYPOT = 'botcheck'
+
+// What lands in the inbox. Slugs are resolved to the labels the sender actually
+// clicked, and the subject carries the name and company so a full inbox can be
+// read down the subject column alone.
+function payloadFor(form) {
+  const company = form.company.trim()
+  const lines = form.lines
+    .map((value) => LINES.find((line) => line.value === value)?.label ?? value)
+    .join(', ')
+
+  return {
+    access_key: ACCESS_KEY,
+    subject: `Enquiry — ${form.name.trim()}${company ? ` · ${company}` : ''}`,
+    from_name: `${siteConfig.name} website`,
+    // Web3Forms replies to this address, so the desk can answer the mail
+    // directly rather than copying the address out of the body.
+    email: form.email.trim(),
+    name: form.name.trim(),
+    company: company || 'Not given',
+    phone: form.phone.trim() || 'Not given',
+    product_lines: lines || 'None selected',
+    message: form.message.trim(),
+  }
+}
+
 const MAP_DIRECTIONS = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(siteConfig.mapQuery)}`
 
 const MAP_COORDS = (() => {
@@ -166,14 +205,39 @@ export default function Contact() {
       return
     }
 
+    // Read before the first await: `currentTarget` is null by the time the
+    // fetch resolves.
+    const filled = new FormData(e.currentTarget).get(HONEYPOT)
+
     setErrors({})
     setStatus('sending')
 
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 700))
+    // A bot filled the field no human can see. Report success and post nothing
+    // — telling a scraper it failed just invites the retry.
+    if (filled) {
       setStatus('sent')
       setForm(EMPTY)
-    } catch {
+      return
+    }
+
+    try {
+      const response = await fetch(WEB3FORMS_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(payloadFor(form)),
+      })
+
+      // Web3Forms answers 200 with `success: false` for a rejected key or a
+      // spam verdict, so the status code alone is not the answer.
+      const result = await response.json().catch(() => null)
+      if (!response.ok || !result?.success) {
+        throw new Error(result?.message ?? `Web3Forms returned ${response.status}`)
+      }
+
+      setStatus('sent')
+      setForm(EMPTY)
+    } catch (error) {
+      console.error('Enquiry not sent:', error)
       setStatus('error')
     }
   }
@@ -494,6 +558,20 @@ export default function Contact() {
                     </div>
                   ) : (
                     <form onSubmit={handleSubmit} noValidate>
+                      {/* Honeypot, the field Web3Forms itself looks for. Hidden
+                          from sight, from the accessibility tree and from the
+                          tab order, so nothing that reads or keyboards this
+                          form can reach it — only something filling every input
+                          it finds in the DOM. sr-only would have read it out. */}
+                      <input
+                        type="text"
+                        name={HONEYPOT}
+                        tabIndex={-1}
+                        autoComplete="off"
+                        aria-hidden="true"
+                        className="hidden"
+                      />
+
                       <p className="flex w-fit items-center gap-3 font-mono text-[0.75rem] uppercase tracking-[0.22em] text-ink">
                         <span aria-hidden="true" className="flex shrink-0 flex-col gap-[2px]">
                           <span className="block h-[2px] w-3 bg-brand-600" />

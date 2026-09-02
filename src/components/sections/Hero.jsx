@@ -23,7 +23,9 @@ const FRAMES = SLIDES.flatMap((slide, slideIndex) =>
 // Where each name's run begins, so hovering it starts from that first plate.
 const FIRST_FRAME = SLIDES.map((slide) => FRAMES.findIndex((f) => f.slide === slide))
 
-const SLIDE_MS = 6500
+// How long one plate holds the screen. It also sets the length of that plate's
+// breath — see the backdrop below.
+const SLIDE_MS = 4800
 const EASE = 'ease-[cubic-bezier(0.32,0.72,0,1)]'
 
 // Two-line lockup, split near the middle so neither line dominates.
@@ -142,11 +144,11 @@ export default function Hero() {
         {FRAMES.map((frame, i) => {
           if (!mounted.includes(i)) return null
           const on = i === index
-          // The plate mid-fade-out keeps drifting. Dropping the animation the
+          // The plate mid-fade-out keeps breathing. Dropping the animation the
           // instant it stopped being current snapped its transform from wherever
-          // the zoom had got to back to the resting scale — a visible jolt at the
+          // the swell had got to back to the resting scale — a visible jolt at the
           // start of every crossfade, while it was still fully opaque.
-          const drifting = on || i === outgoing
+          const breathing = on || i === outgoing
 
           return (
             <img
@@ -158,21 +160,32 @@ export default function Hero() {
               fetchPriority={i === 0 ? 'high' : 'low'}
               loading="eager"
               decoding="async"
-              style={{ objectPosition: frame.slide.focus }}
+              style={{
+                objectPosition: frame.slide.focus,
+                // The breath lasts exactly as long as the plate holds the
+                // screen, so it is set from SLIDE_MS rather than restated in
+                // CSS: change the dwell and the swell follows it. A negative
+                // delay would have been wrong here — with a one-way inhale it
+                // would start the plate partway up its own breath.
+                animationDuration: `${SLIDE_MS}ms`,
+              }}
               className={cn(
                 'absolute inset-0 h-full w-full object-cover',
                 'transition-opacity duration-[1600ms] motion-reduce:transition-none',
                 EASE,
                 on ? 'opacity-100' : 'opacity-0',
-                // will-change matters on the drifting plates specifically. A
+                // will-change matters on the breathing plates specifically. A
                 // scale animation on a full-viewport image without it lets Chrome
                 // re-rasterise 1.3MP as the scale changes, which is the jank;
                 // with it the layer is rastered once at the animation's peak
                 // scale and the compositor just transforms it. At most two plates
-                // hold a layer at a time — the zoom and the one fading out.
-                drifting
-                  ? 'animate-drift will-change-transform motion-reduce:animate-none'
+                // hold a layer at a time — the one on screen and the one fading
+                // out.
+                breathing
+                  ? 'animate-breathe will-change-transform motion-reduce:animate-none'
                   : 'scale-[1.04]',
+                // scale-[1.04] is the keyframe's own `from`, so a plate
+                // waiting its turn sits exactly where its breath will begin.
                 !inView && '[animation-play-state:paused]',
               )}
             />

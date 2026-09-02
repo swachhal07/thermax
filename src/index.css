@@ -40,12 +40,15 @@
   }
 }
 
-@keyframes drift {
+/* The hero plates breathe in: each one swells across its time on screen and is
+   cut away at the top of the breath by the crossfade. There is no exhale — a
+   plate never shrinks back, so the movement only ever opens. */
+@keyframes breathe {
   from {
-    transform: scale(1.13);
+    transform: scale(1.04);
   }
   to {
-    transform: scale(1.04);
+    transform: scale(1.1);
   }
 }
 
@@ -54,7 +57,13 @@
 
   --animate-note: note 420ms cubic-bezier(0.32, 0.72, 0, 1) both;
 
-  --animate-drift: drift 9s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  /* Inhale only, once per plate. The duration here is a fallback — Hero.jsx sets
+     it from SLIDE_MS so the swell always lasts exactly as long as the plate
+     holds the screen, and is still moving when the crossfade takes it. Unlike a
+     loop it has nothing to reset: `alternate` would have exhaled, and `infinite`
+     without it would have snapped back to the start in view. Decelerating curve,
+     so most of the travel lands early, as the plate arrives. */
+  --animate-breathe: breathe 4800ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 
 @layer components {
