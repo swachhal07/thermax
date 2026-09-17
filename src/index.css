@@ -114,6 +114,25 @@
   }
 }
 
+/* Chrome paints autofilled inputs with its own pale blue box, which on the
+   admin's sign-in plate reads as two lit rectangles sitting on the white. There
+   is no property that turns it off: the background can only be covered by an
+   inset shadow, and the text colour only set through -webkit-text-fill-color.
+   The 9999s transition is the standard trick for the moment after autofill when
+   Chrome tries to animate its colour back in. */
+@layer components {
+  .plate-field:-webkit-autofill,
+  .plate-field:-webkit-autofill:hover,
+  .plate-field:-webkit-autofill:focus,
+  .plate-field:-webkit-autofill:active {
+    -webkit-text-fill-color: var(--color-ink);
+    caret-color: var(--color-ink);
+    -webkit-box-shadow: inset 0 0 0 100px #fff;
+    box-shadow: inset 0 0 0 100px #fff;
+    transition: background-color 9999s ease-out 0s;
+  }
+}
+
 @layer base {
   html {
     scroll-behavior: auto;

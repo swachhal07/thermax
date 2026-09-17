@@ -30,3 +30,8 @@ src/assets/images/Sprayed-concrete.jpg
 *.njsproj
 *.sln
 *.sw?
+
+# Local environment
+.env
+.env.local
+!.env.example

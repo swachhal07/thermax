@@ -65,8 +65,15 @@ export const clients = [
     capacityMw: 7.29,
   },
   {
+    // No capacity figure on this one, so it sorts to the foot of the dams
+    // ledger and renders without a bracketed MW figure.
     slug: 'rj-construction',
     name: 'R.J. Construction Company Pvt. Ltd.',
+    sector: 'dams',
+  },
+  {
+    slug: 'federal-secretariat-construction-office',
+    name: 'Federal Secretariat Construction and Management Office',
     sector: 'restoration',
   },
   {

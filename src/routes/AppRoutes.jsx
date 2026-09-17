@@ -10,6 +10,7 @@ const Clients = lazy(() => import('@/pages/Clients'))
 const Careers = lazy(() => import('@/pages/Careers'))
 const Contact = lazy(() => import('@/pages/Contact'))
 const NotFound = lazy(() => import('@/pages/NotFound'))
+const Admin = lazy(() => import('@/pages/Admin'))
 
 function RouteFallback() {
   return <div className="min-h-[60vh]" />
@@ -18,6 +19,18 @@ function RouteFallback() {
 export default function AppRoutes() {
   return (
     <Routes>
+      {/* Outside Layout: the admin carries its own shell and none of the site's
+          header, footer or scroll behaviour. `admin/*` so it can route its own
+          panels underneath. */}
+      <Route
+        path="admin/*"
+        element={
+          <Suspense fallback={<RouteFallback />}>
+            <Admin />
+          </Suspense>
+        }
+      />
+
       <Route element={<Layout />}>
         <Route index element={<Home />} />
         <Route
